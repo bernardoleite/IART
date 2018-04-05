@@ -12,7 +12,7 @@ public class Board extends JPanel {
 	private ArrayList<Tile> tiles;
 	private ArrayList<Piece> pieces;
 	
-	public Board(int size, int pixels){
+	public Board(int size, int pixels, GameLogic logic){
 		
 		this.size = size;
 		
@@ -31,11 +31,15 @@ public class Board extends JPanel {
 		}
 		
 		//Initialise Pieces
-		/*for(int i = 0; i < this.size; i++){
-			for(int j = 0; j < this.size; j++){
-				pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.white));
+		for(int i = 0; i < logic.getBoardArray().length; i++){
+			for(int j = 0; j < logic.getBoardArray()[i].length; j++){
+				if(logic.getBoardArray()[i][j] == 1)
+					pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.white));
+				else if(logic.getBoardArray()[i][j] == 2)
+					pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.black));
+
 			}
-		}*/
+		}
 		
 	}
 	

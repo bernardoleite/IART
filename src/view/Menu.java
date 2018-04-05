@@ -45,8 +45,10 @@ public class Menu {
 		frmMorelli.setBounds(100, 100, 821, 587);
 		frmMorelli.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMorelli.getContentPane().setLayout(null);
+
+		GameLogic game = new GameLogic();
 		
-		JPanel board = new Board(13, 500);
+		JPanel board = new Board(13, 500, game);
 		board.setBackground(UIManager.getColor("MenuBar.shadow"));
 		board.setBounds(21, 24, 500, 500);
 		frmMorelli.getContentPane().add(board);
@@ -55,6 +57,10 @@ public class Menu {
 		startBtn.setBounds(604, 30, 121, 36);
 		frmMorelli.getContentPane().add(startBtn);
 
-		GameLogic game = new GameLogic();
+        /*AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
+        tx.translate(0, -image.getHeight(null));
+        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
+        image = op.filter(image, null);*/
+
 	}
 }
