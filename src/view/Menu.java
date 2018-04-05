@@ -54,5 +54,7 @@ public class Menu {
 		JButton startBtn = new JButton("New Game");
 		startBtn.setBounds(604, 30, 121, 36);
 		frmMorelli.getContentPane().add(startBtn);
+
+		GameLogic game = new GameLogic();
 	}
 }

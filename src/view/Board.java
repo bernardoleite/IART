@@ -31,11 +31,11 @@ public class Board extends JPanel {
 		}
 		
 		//Initialise Pieces
-		for(int i = 0; i < this.size; i++){
+		/*for(int i = 0; i < this.size; i++){
 			for(int j = 0; j < this.size; j++){
 				pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.white));
 			}
-		}
+		}*/
 		
 	}
 	
