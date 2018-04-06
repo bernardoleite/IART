@@ -79,7 +79,7 @@ public class GameLogic {
 
         printBoard();
 
-        printPossibleMoves(possibleMoves(9,6,1));
+        printPossibleMoves(possibleMoves(0,12,1));
 
         //reduceQuadrant(11,11);
 
@@ -211,51 +211,99 @@ public class GameLogic {
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
         if(currentX < 12)
-        for(int i = currentX+1; i < boardArray[currentY].length; i++){
-            if(getBoardArray()[currentY][i] == 0)
-                if(colorSchemaBoardArray[currentY][i] > currentColor)
-                    possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+            for(int i = currentX+1; i < boardArray[currentY].length; i++){
+                if(getBoardArray()[currentY][i] == 0)
+                    if(colorSchemaBoardArray[currentY][i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                    else
+                        break;
                 else
                     break;
-            else
-                break;
-        }
+            }
 
         //Verificação na horizontal da posição atual para a trás.
         if(currentX > 0)
-        for(int i = currentX-1; i < boardArray[currentY].length; i--){
-            if(getBoardArray()[currentY][i] == 0)
-                if(colorSchemaBoardArray[currentY][i] > currentColor)
-                    possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+            for(int i = currentX-1; i < boardArray[currentY].length; i--){
+                if(getBoardArray()[currentY][i] == 0)
+                    if(colorSchemaBoardArray[currentY][i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                    else
+                        break;
                 else
                     break;
-            else
-                break;
-        }
+            }
 
         //Verificação na vertical da posição atual para baixo.
         if(currentY < 12)
-        for(int i = currentY+1; i < boardArray.length; i++){
-            if(getBoardArray()[i][currentX] == 0)
-                if(colorSchemaBoardArray[i][currentX] > currentColor)
-                    possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+            for(int i = currentY+1; i < boardArray.length; i++){
+                if(getBoardArray()[i][currentX] == 0)
+                    if(colorSchemaBoardArray[i][currentX] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                    else
+                        break;
                 else
                     break;
-            else
-                break;
-        }
+            }
 
         //Verificação na vertical da posição atual para cima.
         if(currentY > 0)
-        for(int i = currentY-1; i >= 0; i--){
-            if(getBoardArray()[i][currentX] == 0)
-                if(colorSchemaBoardArray[i][currentX] > currentColor)
-                    possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+            for(int i = currentY-1; i >= 0; i--){
+                if(getBoardArray()[i][currentX] == 0)
+                    if(colorSchemaBoardArray[i][currentX] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                    else
+                        break;
                 else
                     break;
-            else
-                break;
-        }
+            }
+
+        //Verificação diagonal cima para a direita (-1 em x) (+1 em y)
+        if(currentY > 0 && currentX < 12)
+            for(int i = 1; i >= 0; i++){
+                if(getBoardArray()[currentY-i][currentX+i] == 0)
+                    if(colorSchemaBoardArray[currentY-i][currentX+i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY-i, currentX+i));
+                    else
+                        break;
+                else
+                    break;
+            }
+
+        //Verificação diagonal cima para a esquerda (-1 em x) (-1 em y)
+        if(currentY > 0 && currentX > 0)
+            for(int i = 1; i >= 0; i++){
+                if(getBoardArray()[currentY-i][currentX-i] == 0)
+                    if(colorSchemaBoardArray[currentY-i][currentX-i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY-i, currentX-i));
+                    else
+                        break;
+                else
+                    break;
+            }
+
+        //Verificação diagonal baixo para a direita (+1 em x) (+1 em y)
+        if(currentY < 12 && currentX < 12)
+            for(int i = 1; i >= 0; i++){
+                if(getBoardArray()[currentY+i][currentX+i] == 0)
+                    if(colorSchemaBoardArray[currentY+i][currentX+i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY+i, currentX+i));
+                    else
+                        break;
+                else
+                    break;
+            }
+
+        //Verificação diagonal baixo para a esquerda (-1 em x) (-1 em y)
+        if(currentY < 12 && currentX > 0)
+            for(int i = 1; i >= 0; i++){
+                if(getBoardArray()[currentY+i][currentX-i] == 0)
+                    if(colorSchemaBoardArray[currentY+i][currentX-i] > currentColor)
+                        possibleMoves.add(new Pair<Integer, Integer>(currentY+i, currentX-i));
+                    else
+                        break;
+                else
+                    break;
+            }
 
         return possibleMoves;
     }
