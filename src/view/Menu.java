@@ -1,5 +1,7 @@
 package view;
 
+import javafx.util.Pair;
+
 import java.awt.EventQueue;
 
 import javax.swing.JFrame;
@@ -8,6 +10,9 @@ import javax.swing.JButton;
 import javax.swing.UIManager;
 import java.awt.event.ActionListener;
 import java.awt.event.ActionEvent;
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStreamReader;
 
 public class Menu {
 
@@ -56,11 +61,6 @@ public class Menu {
 		JButton startBtn = new JButton("New Game");
 		startBtn.setBounds(604, 30, 121, 36);
 		frmMorelli.getContentPane().add(startBtn);
-
-        /*AffineTransform tx = AffineTransform.getScaleInstance(1, -1);
-        tx.translate(0, -image.getHeight(null));
-        AffineTransformOp op = new AffineTransformOp(tx, AffineTransformOp.TYPE_NEAREST_NEIGHBOR);
-        image = op.filter(image, null);*/
-
 	}
+
 }

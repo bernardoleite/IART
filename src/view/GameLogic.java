@@ -34,55 +34,55 @@ public class GameLogic {
         Random random = new Random();
         int rnd;
 
-
         int blacks = 24; // random 2
         int whites = 24; // random 1
 
         for(int i = 0; i < 13; i++){
             if(i == 0 || i == 12)
                 for (int j = 0; j < 13; j++){
-                        rnd = random.nextInt(1-0 + 1);
+                    rnd = random.nextInt(1-0 + 1);
 
-                        if(rnd == 0 && whites > 0){
-                            whites --;
-                            boardArray[i][j] = 1;
+                    if(rnd == 0 && whites > 0){
+                        whites --;
+                        boardArray[i][j] = 1;
 
-                            if(j != i)
-                                boardArray[j][i] = 2;
-                        }
-                        else if(rnd == 1 && blacks > 0){
-                            blacks --;
-                            boardArray[i][j] = 2;
-
-                            if(j != i)
-                                boardArray[j][i] = 1;
-                        }
+                        if(j != i)
+                            boardArray[j][i] = 2;
                     }
-            }
+                    else if(rnd == 1 && blacks > 0){
+                        blacks --;
+                        boardArray[i][j] = 2;
 
-            if(boardArray[0][0] == boardArray[12][12])
-                if(boardArray[0][0] == 1)
-                    boardArray[12][12] = 2;
-                else
-                    boardArray[12][12] = 1;
+                        if(j != i)
+                            boardArray[j][i] = 1;
+                    }
+                }
+        }
+
+        if(boardArray[0][0] == boardArray[12][12])
+            if(boardArray[0][0] == 1)
+                boardArray[12][12] = 2;
+            else
+                boardArray[12][12] = 1;
 
 
-        //boardArray[11][11] = 2;
-
-        //boardArray[2][2] = 1;
+        //teste de simetria
         boardArray[1][2] = 2;
         boardArray[10][1] = 2;
         boardArray[11][10] = 2;
         boardArray[2][11] = 2;
+        verifyCaptureKing(1,2,2);
 
-        //verifyCaptureKing(1,2,2);
-
-        printBoard();
-
+        //teste de print de jogadas possiveis
         printPossibleMoves(possibleMoves(0,12,1));
 
-        //reduceQuadrant(11,11);
+        //teste de printar a board para verificar o inicio random
+        printBoard();
 
+    }
+
+    public void setBoardArray(int y, int x, int player){
+        boardArray[y][x] = player;
     }
 
     public boolean verifyCaptureKing(int currentMoveY, int currentMoveX, int player){
@@ -99,16 +99,6 @@ public class GameLogic {
             if(reducedQuad[currentMoveY][currentMoveX] != boardArray[currentMoveY][currentMoveX])
                 return false;
         }
-
-
-
-        /*for(int i = 0; i < 3; i++){
-            newMoveY = newMoveY * (int)Math.cos(Math.toRadians(90)) + newMoveX * (int)Math.sin(Math.toRadians(90));
-            newMoveX = newMoveX * (int)Math.cos(Math.toRadians(90)) - newMoveY * (int)Math.sin(Math.toRadians(90));
-
-            if(boardArray[newMoveY+6][newMoveX+6] != player)
-                return false;
-        }*/
 
         System.out.println("Symmetry found!");
 
@@ -197,6 +187,7 @@ public class GameLogic {
     }
 
     public void printPossibleMoves(ArrayList<Pair<Integer,Integer>> possibleMoves){
+        System.out.println();
         for (int i= 0; i < possibleMoves.size(); i++){
             System.out.println("Possible move " + i + ": (" + possibleMoves.get(i).getKey() + "," + possibleMoves.get(i).getValue() + ")");
         }
@@ -206,7 +197,6 @@ public class GameLogic {
 
         ArrayList<Pair<Integer,Integer>> possibleMoves = new ArrayList<Pair<Integer,Integer>>();
         int currentColor = colorSchemaBoardArray[currentY][currentX];
-
 
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
@@ -309,6 +299,7 @@ public class GameLogic {
     }
 
     public void printBoard(){
+        System.out.println();
         for (int i = 0; i < 13; i++){
             for(int j = 0; j < 13; j++)
                 System.out.print(boardArray[i][j] + " ");
