@@ -12,6 +12,22 @@ public class GameLogic {
     public int[][] getBoardArray() {
         return boardArray;
     }
+    public int[][] colorSchemaBoardArray = new int[][]
+        {
+            {1,1,1,1,1,1,1,1,1,1,1,1,1},
+            {1,2,2,2,2,2,2,2,2,2,2,2,1},
+            {1,2,3,3,3,3,3,3,3,3,3,2,1},
+            {1,2,3,4,4,4,4,4,4,4,3,2,1},
+            {1,2,3,4,5,5,5,5,5,4,3,2,1},
+            {1,2,3,4,5,6,6,6,5,4,3,2,1},
+            {1,2,3,4,5,6,0,6,5,4,3,2,1},
+            {1,2,3,4,5,6,6,6,5,4,3,2,1},
+            {1,2,3,4,5,5,5,5,5,4,3,2,1},
+            {1,2,3,4,4,4,4,4,4,4,3,2,1},
+            {1,2,3,3,3,3,3,3,3,3,3,2,1},
+            {1,2,2,2,2,2,2,2,2,2,2,2,1},
+            {1,1,1,1,1,1,1,1,1,1,1,1,1}
+        };
 
     GameLogic(){
         boardArray = new int[13][13];
@@ -53,16 +69,19 @@ public class GameLogic {
 
         //boardArray[11][11] = 2;
 
+        //boardArray[2][2] = 1;
         boardArray[1][2] = 2;
         boardArray[10][1] = 2;
         boardArray[11][10] = 2;
         boardArray[2][11] = 2;
 
-        verifyCaptureKing(1,2,2);
+        //verifyCaptureKing(1,2,2);
 
         printBoard();
 
-        reduceQuadrant(11,11);
+        printPossibleMoves(possibleMoves(9,6,1));
+
+        //reduceQuadrant(11,11);
 
     }
 
@@ -151,7 +170,6 @@ public class GameLogic {
         }
     }
 
-
     //sentido anti-horário a começar no canto superior esquerdo
     private int solveQuad(int y, int x) {
 
@@ -178,45 +196,66 @@ public class GameLogic {
         return 0;
     }
 
-    ArrayList<Pair<Integer,Integer>> possibleMoves(int currentY, int currentX, int player){
+    public void printPossibleMoves(ArrayList<Pair<Integer,Integer>> possibleMoves){
+        for (int i= 0; i < possibleMoves.size(); i++){
+            System.out.println("Possible move " + i + ": (" + possibleMoves.get(i).getKey() + "," + possibleMoves.get(i).getValue() + ")");
+        }
+    }
+
+    public ArrayList<Pair<Integer,Integer>> possibleMoves(int currentY, int currentX, int player){
 
         ArrayList<Pair<Integer,Integer>> possibleMoves = new ArrayList<Pair<Integer,Integer>>();
-        int[][] reducedQuadrant = reduceQuadrant(currentY, currentX);
+        int currentColor = colorSchemaBoardArray[currentY][currentX];
 
-        if(currentX == currentY)
-            for(int i = currentX; i < 5; i++);
 
+        //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
-        /*for(int i = currentX+1; i < boardArray[currentY].length; i++){
+        if(currentX < 12)
+        for(int i = currentX+1; i < boardArray[currentY].length; i++){
             if(getBoardArray()[currentY][i] == 0)
-                possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                if(colorSchemaBoardArray[currentY][i] > currentColor)
+                    possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                else
+                    break;
             else
                 break;
         }
 
         //Verificação na horizontal da posição atual para a trás.
+        if(currentX > 0)
         for(int i = currentX-1; i < boardArray[currentY].length; i--){
             if(getBoardArray()[currentY][i] == 0)
-                possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                if(colorSchemaBoardArray[currentY][i] > currentColor)
+                    possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
+                else
+                    break;
             else
                 break;
         }
 
         //Verificação na vertical da posição atual para baixo.
+        if(currentY < 12)
         for(int i = currentY+1; i < boardArray.length; i++){
             if(getBoardArray()[i][currentX] == 0)
-                possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                if(colorSchemaBoardArray[i][currentX] > currentColor)
+                    possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                else
+                    break;
             else
                 break;
         }
 
         //Verificação na vertical da posição atual para cima.
+        if(currentY > 0)
         for(int i = currentY-1; i >= 0; i--){
             if(getBoardArray()[i][currentX] == 0)
-                possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                if(colorSchemaBoardArray[i][currentX] > currentColor)
+                    possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
+                else
+                    break;
             else
                 break;
-        }*/
+        }
 
         return possibleMoves;
     }

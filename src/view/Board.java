@@ -34,9 +34,9 @@ public class Board extends JPanel {
 		for(int i = 0; i < logic.getBoardArray().length; i++){
 			for(int j = 0; j < logic.getBoardArray()[i].length; j++){
 				if(logic.getBoardArray()[i][j] == 1)
-					pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.white));
+					pieces.add(new Piece(j*tileSize + tileSize/6,i*tileSize + tileSize/6,tileSize*2/3,Color.white));
 				else if(logic.getBoardArray()[i][j] == 2)
-					pieces.add(new Piece(i*tileSize + tileSize/6,j*tileSize + tileSize/6,tileSize*2/3,Color.black));
+					pieces.add(new Piece(j*tileSize + tileSize/6,i*tileSize + tileSize/6,tileSize*2/3,Color.black));
 
 			}
 		}
