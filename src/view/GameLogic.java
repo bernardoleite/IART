@@ -65,16 +65,29 @@ public class GameLogic {
             else
                 boardArray[12][12] = 1;
 
+        //verifica que apanhou uma peça na horizontal
+        boardArray[1][1] = 2;
+        boardArray[1][2] = 1;
+        boardArray[1][3] = 2;
+
+        printCaughtPieces(catchPiece(1,1,2));
+
+        //verifica que apanhou uma peça na diagonal
+        boardArray[2][2] = 2;
+        boardArray[3][3] = 1;
+        boardArray[4][4] = 2;
+
+        printCaughtPieces(catchPiece(2,2,2));
 
         //teste de simetria
-        boardArray[1][2] = 2;
+        /*boardArray[1][2] = 2;
         boardArray[10][1] = 2;
         boardArray[11][10] = 2;
-        boardArray[2][11] = 2;
-        verifyCaptureKing(1,2,2);
+        boardArray[2][11] = 2;*/
+        //verifyCaptureKing(1,2,2);
 
         //teste de print de jogadas possiveis
-        printPossibleMoves(possibleMoves(0,12,1));
+        //printPossibleMoves(possibleMoves(0,12,1));
 
         //teste de printar a board para verificar o inicio random
         printBoard();
@@ -193,6 +206,13 @@ public class GameLogic {
         }
     }
 
+    public void printCaughtPieces(ArrayList<Pair<Integer,Integer>> CaughtPieces){
+        System.out.println();
+        for (int i= 0; i < CaughtPieces.size(); i++){
+            System.out.println("Catch Piece " + i + ": (" + CaughtPieces.get(i).getKey() + "," + CaughtPieces.get(i).getValue() + ")");
+        }
+    }
+
     public ArrayList<Pair<Integer,Integer>> possibleMoves(int currentY, int currentX, int player){
 
         ArrayList<Pair<Integer,Integer>> possibleMoves = new ArrayList<Pair<Integer,Integer>>();
@@ -296,6 +316,70 @@ public class GameLogic {
             }
 
         return possibleMoves;
+    }
+
+    public  ArrayList<Pair<Integer,Integer>> catchPiece(int currentY, int currentX, int player){
+        ArrayList<Pair<Integer,Integer>> eatenPieces = new  ArrayList<Pair<Integer,Integer>>();
+
+        //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
+        //Verificação na horizontal da posição atual para a frente.
+        if(currentX < 11)
+            if(getBoardArray()[currentY][currentX+1] != player && getBoardArray()[currentY][currentX+1] != 0)
+                if(getBoardArray()[currentY][currentX+2] == player && getBoardArray()[currentY][currentX+2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY, currentX+1));
+                }
+
+
+        //Verificação na horizontal da posição atual para a trás.
+        if(currentX > 1)
+            if(getBoardArray()[currentY][currentX-1] != player && getBoardArray()[currentY][currentX-1] != 0)
+                if(getBoardArray()[currentY][currentX-2] == player && getBoardArray()[currentY][currentX-2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY, currentX-1));
+                }
+
+        //Verificação na vertical da posição atual para baixo.
+        if(currentY < 11)
+            if(getBoardArray()[currentY+1][currentX] != player && getBoardArray()[currentY+1][currentX] != 0)
+                if(getBoardArray()[currentY+2][currentX] == player && getBoardArray()[currentY+2][currentX] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX));
+                }
+
+        //Verificação na vertical da posição atual para cima.
+        if(currentY > 1)
+            if(getBoardArray()[currentY-1][currentX] != player && getBoardArray()[currentY-1][currentX] != 0)
+                if(getBoardArray()[currentY-2][currentX] == player && getBoardArray()[currentY-2][currentX] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY-1, currentX));
+                }
+
+        //Verificação diagonal cima para a direita (-1 em x) (+1 em y)
+        if(currentY > 1 && currentX < 11)
+            if(getBoardArray()[currentY-1][currentX+1] != player && getBoardArray()[currentY-1][currentX+1] != 0)
+                if(getBoardArray()[currentY-2][currentX+2] == player && getBoardArray()[currentY-2][currentX+2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY-1, currentX+1));
+                }
+
+        //Verificação diagonal cima para a esquerda (-1 em x) (-1 em y)
+        if(currentY > 1 && currentX > 1)
+            if(getBoardArray()[currentY-1][currentX-1] != player && getBoardArray()[currentY-1][currentX-1] != 0)
+                if(getBoardArray()[currentY-2][currentX-2] == player && getBoardArray()[currentY-2][currentX-2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY-1, currentX-1));
+                }
+
+        //Verificação diagonal baixo para a direita (+1 em x) (+1 em y)
+        if(currentY < 11 && currentX < 11)
+            if(getBoardArray()[currentY+1][currentX+1] != player && getBoardArray()[currentY+1][currentX+1] != 0)
+                if(getBoardArray()[currentY+2][currentX+2] == player && getBoardArray()[currentY+2][currentX+2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX+1));
+                }
+
+        //Verificação diagonal baixo para a esquerda (-1 em x) (-1 em y)
+        if(currentY < 11 && currentX > 1)
+            if(getBoardArray()[currentY+1][currentX-1] != player && getBoardArray()[currentY+1][currentX-1] != 0)
+                if(getBoardArray()[currentY+2][currentX-2] == player && getBoardArray()[currentY+2][currentX-2] != 0){
+                    eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX-1));
+                }
+
+        return eatenPieces;
     }
 
     public void printBoard(){
