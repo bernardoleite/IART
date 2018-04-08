@@ -64,7 +64,71 @@ public class GameLogic {
                 boardArray[12][12] = 2;
             else
                 boardArray[12][12] = 1;
+        
+        /*
+         * TESTE DE UM ESTADO FINAL
+        boardArray = new int[13][13];
+        boardArray[8][0] = 1;
+        boardArray[8][1] = 1;
+        boardArray[3][2] = 2;
+        
+        boardArray[3][3] = 2;
+        boardArray[4][3] = 2;
+        boardArray[5][3] = 2;
+        boardArray[6][3] = 1;
+        boardArray[7][3] = 1;
+        boardArray[8][3] = 1;
+        boardArray[9][3] = 1;
+        
+        boardArray[4][4] = 2;
+        boardArray[5][4] = 2;
+        boardArray[6][4] = 1;
+        boardArray[7][4] = 2;
+        boardArray[8][4] = 1;
+        boardArray[9][4] = 1;
+        
+        boardArray[3][5] = 2;
+        boardArray[4][5] = 2;
+        boardArray[5][5] = 2;
+        boardArray[6][5] = 1;
+        boardArray[7][5] = 2;
+        boardArray[8][5] = 1;
+        boardArray[9][5] = 1;
+        
+        boardArray[3][6] = 2;
+        boardArray[4][6] = 2;
+        boardArray[5][6] = 2;
+        boardArray[6][6] = 1;
+        boardArray[7][6] = 1;
+        boardArray[8][6] = 2;
+        boardArray[9][6] = 1;
+        
+        boardArray[3][7] = 2;
+        boardArray[4][7] = 1;
+        boardArray[5][7] = 2;
+        boardArray[6][7] = 2;
+        boardArray[7][7] = 2;
+        boardArray[8][7] = 1;
+        boardArray[9][7] = 1;
+        
+        boardArray[4][8] = 2;
+        boardArray[5][8] = 1;
+        boardArray[7][8] = 1;
+        boardArray[8][8] = 1;
+        boardArray[9][8] = 1;
+        
+        boardArray[3][9] = 2;
+        boardArray[6][9] = 1;
+        boardArray[9][9] = 1;
+        
+        boardArray[10][10] = 1;
+        boardArray[11][10] = 1;
+        boardArray[10][11] = 1;
+        boardArray[10][12] = 1;
+         */     
 
+        /*
+         * VERIFICAR APANHAR PE«AS
         //verifica que apanhou uma pe√ßa na horizontal
         boardArray[1][1] = 2;
         boardArray[1][2] = 1;
@@ -78,6 +142,7 @@ public class GameLogic {
         boardArray[4][4] = 2;
 
         printCaughtPieces(catchPiece(2,2,2));
+         */     
 
         //teste de simetria
         /*boardArray[1][2] = 2;
