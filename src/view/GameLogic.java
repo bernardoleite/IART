@@ -7,6 +7,8 @@ import java.util.Random;
 
 public class GameLogic {
 
+	private int size;
+	private int colorDelta;
     private int [][] boardArray;
 
     public int[][] getBoardArray() {
@@ -29,41 +31,34 @@ public class GameLogic {
             {1,1,1,1,1,1,1,1,1,1,1,1,1}
         };
 
-    GameLogic(){
-        boardArray = new int[13][13];
+    GameLogic(int size){
+    	this.size = size;
+    	this.colorDelta = (13-size)/2;
+    	
+        boardArray = new int[this.size][this.size];
+
+        //Random Start
         Random random = new Random();
-        int rnd;
-
-        int blacks = 24; // random 2
-        int whites = 24; // random 1
-
-        for(int i = 0; i < 13; i++){
-            if(i == 0 || i == 12)
-                for (int j = 0; j < 13; j++){
-                    rnd = random.nextInt(1-0 + 1);
-
-                    if(rnd == 0 && whites > 0){
-                        whites --;
-                        boardArray[i][j] = 1;
-
-                        if(j != i)
-                            boardArray[j][i] = 2;
-                    }
-                    else if(rnd == 1 && blacks > 0){
-                        blacks --;
-                        boardArray[i][j] = 2;
-
-                        if(j != i)
-                            boardArray[j][i] = 1;
-                    }
-                }
+        for(int i = 0; i < this.size; i++){
+            int rng = random.nextInt(2);
+            if(rng == 0){
+            	boardArray[i][0] = 2;
+            	boardArray[this.size-1-i][this.size-1] = 1;
+            }else{
+            	boardArray[i][0] = 1;
+            	boardArray[this.size-1-i][this.size-1] = 2;
+            }
         }
-
-        if(boardArray[0][0] == boardArray[12][12])
-            if(boardArray[0][0] == 1)
-                boardArray[12][12] = 2;
-            else
-                boardArray[12][12] = 1;
+        for(int i = 1; i < this.size-1; i++){
+            int rng = random.nextInt(2);
+            if(rng == 0){
+            	boardArray[0][i] = 2;
+            	boardArray[this.size-1][this.size-1-i] = 1;
+            }else{
+            	boardArray[0][i] = 1;
+            	boardArray[this.size-1][this.size-1-i] = 2;
+            }
+        }
         
         /*
          * TESTE DE UM ESTADO FINAL
@@ -128,7 +123,6 @@ public class GameLogic {
          */     
 
         /*
-         * VERIFICAR APANHAR PE�AS
         //verifica que apanhou uma peça na horizontal
         boardArray[1][1] = 2;
         boardArray[1][2] = 1;
@@ -146,13 +140,13 @@ public class GameLogic {
 
         //teste de simetria
         /*boardArray[1][2] = 2;
-        boardArray[10][1] = 2;
-        boardArray[11][10] = 2;
-        boardArray[2][11] = 2;*/
-        //verifyCaptureKing(1,2,2);
+        boardArray[this.size-3][1] = 2;
+        boardArray[this.size-2][this.size-3] = 2;
+        boardArray[2][this.size-2] = 2;
+        verifyCaptureKing(1,2,2);*/
 
         //teste de print de jogadas possiveis
-        //printPossibleMoves(possibleMoves(0,12,1));
+        //printPossibleMoves(possibleMoves(0,0,1));
 
         //teste de printar a board para verificar o inicio random
         printBoard();
@@ -166,7 +160,7 @@ public class GameLogic {
     public boolean verifyCaptureKing(int currentMoveY, int currentMoveX, int player){
         int newMoveY = currentMoveY - 6;
         int newMoveX = currentMoveX - 6;
-        int[][] reducedQuad = new int[13][13];
+        int[][] reducedQuad = new int[size][size];
 
         for (int i = 0; i < boardArray.length; i++)
             for (int j = 0; j < boardArray.length; j++)
@@ -188,7 +182,7 @@ public class GameLogic {
     }
 
     public int[][] reduceQuadrant(int currentY, int currentX){
-        int [][] reducedQuad = new int[13][13];
+        int [][] reducedQuad = new int[size][size];
         int quadrant = solveQuad(currentY, currentX);
         int alpha = 0;
 
@@ -206,8 +200,8 @@ public class GameLogic {
 
         System.out.println();
 
-        for (int i = 0; i < 13; i++){
-            for(int j = 0; j < 13; j++)
+        for (int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++)
                 System.out.print(reducedQuad[i][j] + " ");
             System.out.println();
         }
@@ -281,14 +275,14 @@ public class GameLogic {
     public ArrayList<Pair<Integer,Integer>> possibleMoves(int currentY, int currentX, int player){
 
         ArrayList<Pair<Integer,Integer>> possibleMoves = new ArrayList<Pair<Integer,Integer>>();
-        int currentColor = colorSchemaBoardArray[currentY][currentX];
+        int currentColor = colorSchemaBoardArray[colorDelta + currentY][colorDelta + currentX];
 
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
         if(currentX < 12)
             for(int i = currentX+1; i < boardArray[currentY].length; i++){
                 if(getBoardArray()[currentY][i] == 0)
-                    if(colorSchemaBoardArray[currentY][i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY][colorDelta + i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
                     else
                         break;
@@ -300,7 +294,7 @@ public class GameLogic {
         if(currentX > 0)
             for(int i = currentX-1; i < boardArray[currentY].length; i--){
                 if(getBoardArray()[currentY][i] == 0)
-                    if(colorSchemaBoardArray[currentY][i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY][colorDelta + i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY, i));
                     else
                         break;
@@ -309,10 +303,10 @@ public class GameLogic {
             }
 
         //Verificação na vertical da posição atual para baixo.
-        if(currentY < 12)
+        if(currentY < size-1)
             for(int i = currentY+1; i < boardArray.length; i++){
                 if(getBoardArray()[i][currentX] == 0)
-                    if(colorSchemaBoardArray[i][currentX] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + i][colorDelta + currentX] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
                     else
                         break;
@@ -324,7 +318,7 @@ public class GameLogic {
         if(currentY > 0)
             for(int i = currentY-1; i >= 0; i--){
                 if(getBoardArray()[i][currentX] == 0)
-                    if(colorSchemaBoardArray[i][currentX] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + i][colorDelta + currentX] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(i, currentX));
                     else
                         break;
@@ -333,10 +327,10 @@ public class GameLogic {
             }
 
         //Verificação diagonal cima para a direita (-1 em x) (+1 em y)
-        if(currentY > 0 && currentX < 12)
+        if(currentY > 0 && currentX < size-1)
             for(int i = 1; i >= 0; i++){
                 if(getBoardArray()[currentY-i][currentX+i] == 0)
-                    if(colorSchemaBoardArray[currentY-i][currentX+i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY-i][colorDelta + currentX+i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY-i, currentX+i));
                     else
                         break;
@@ -348,7 +342,7 @@ public class GameLogic {
         if(currentY > 0 && currentX > 0)
             for(int i = 1; i >= 0; i++){
                 if(getBoardArray()[currentY-i][currentX-i] == 0)
-                    if(colorSchemaBoardArray[currentY-i][currentX-i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY-i][colorDelta + currentX-i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY-i, currentX-i));
                     else
                         break;
@@ -357,10 +351,10 @@ public class GameLogic {
             }
 
         //Verificação diagonal baixo para a direita (+1 em x) (+1 em y)
-        if(currentY < 12 && currentX < 12)
+        if(currentY < size-1 && currentX < size-1)
             for(int i = 1; i >= 0; i++){
                 if(getBoardArray()[currentY+i][currentX+i] == 0)
-                    if(colorSchemaBoardArray[currentY+i][currentX+i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY+i][colorDelta + currentX+i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY+i, currentX+i));
                     else
                         break;
@@ -369,10 +363,10 @@ public class GameLogic {
             }
 
         //Verificação diagonal baixo para a esquerda (-1 em x) (-1 em y)
-        if(currentY < 12 && currentX > 0)
+        if(currentY < size-1 && currentX > 0)
             for(int i = 1; i >= 0; i++){
                 if(getBoardArray()[currentY+i][currentX-i] == 0)
-                    if(colorSchemaBoardArray[currentY+i][currentX-i] > currentColor)
+                    if(colorSchemaBoardArray[colorDelta + currentY+i][colorDelta + currentX-i] > currentColor)
                         possibleMoves.add(new Pair<Integer, Integer>(currentY+i, currentX-i));
                     else
                         break;
@@ -388,7 +382,7 @@ public class GameLogic {
 
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
-        if(currentX < 11)
+        if(currentX < size-2)
             if(getBoardArray()[currentY][currentX+1] != player && getBoardArray()[currentY][currentX+1] != 0)
                 if(getBoardArray()[currentY][currentX+2] == player && getBoardArray()[currentY][currentX+2] != 0){
                     eatenPieces.add(new Pair<Integer, Integer>(currentY, currentX+1));
@@ -403,7 +397,7 @@ public class GameLogic {
                 }
 
         //Verificação na vertical da posição atual para baixo.
-        if(currentY < 11)
+        if(currentY < size-2)
             if(getBoardArray()[currentY+1][currentX] != player && getBoardArray()[currentY+1][currentX] != 0)
                 if(getBoardArray()[currentY+2][currentX] == player && getBoardArray()[currentY+2][currentX] != 0){
                     eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX));
@@ -417,7 +411,7 @@ public class GameLogic {
                 }
 
         //Verificação diagonal cima para a direita (-1 em x) (+1 em y)
-        if(currentY > 1 && currentX < 11)
+        if(currentY > 1 && currentX < size-2)
             if(getBoardArray()[currentY-1][currentX+1] != player && getBoardArray()[currentY-1][currentX+1] != 0)
                 if(getBoardArray()[currentY-2][currentX+2] == player && getBoardArray()[currentY-2][currentX+2] != 0){
                     eatenPieces.add(new Pair<Integer, Integer>(currentY-1, currentX+1));
@@ -431,14 +425,14 @@ public class GameLogic {
                 }
 
         //Verificação diagonal baixo para a direita (+1 em x) (+1 em y)
-        if(currentY < 11 && currentX < 11)
+        if(currentY < size-2 && currentX < size-2)
             if(getBoardArray()[currentY+1][currentX+1] != player && getBoardArray()[currentY+1][currentX+1] != 0)
                 if(getBoardArray()[currentY+2][currentX+2] == player && getBoardArray()[currentY+2][currentX+2] != 0){
                     eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX+1));
                 }
 
         //Verificação diagonal baixo para a esquerda (-1 em x) (-1 em y)
-        if(currentY < 11 && currentX > 1)
+        if(currentY < size-2 && currentX > 1)
             if(getBoardArray()[currentY+1][currentX-1] != player && getBoardArray()[currentY+1][currentX-1] != 0)
                 if(getBoardArray()[currentY+2][currentX-2] == player && getBoardArray()[currentY+2][currentX-2] != 0){
                     eatenPieces.add(new Pair<Integer, Integer>(currentY+1, currentX-1));
@@ -449,8 +443,8 @@ public class GameLogic {
 
     public void printBoard(){
         System.out.println();
-        for (int i = 0; i < 13; i++){
-            for(int j = 0; j < 13; j++)
+        for (int i = 0; i < size; i++){
+            for(int j = 0; j < size; j++)
                 System.out.print(boardArray[i][j] + " ");
             System.out.println();
         }

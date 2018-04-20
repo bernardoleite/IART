@@ -51,7 +51,7 @@ public class Menu {
 		frmMorelli.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMorelli.getContentPane().setLayout(null);
 
-		GameLogic game = new GameLogic();
+		GameLogic game = new GameLogic(13);
 		
 		JPanel board = new Board(13, 500, game);
 		board.setBackground(UIManager.getColor("MenuBar.shadow"));
