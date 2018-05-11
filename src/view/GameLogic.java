@@ -37,7 +37,7 @@ public class GameLogic {
     	
         boardArray = new int[this.size][this.size];
 
-        //Random Start
+        //Random Start the Board
         Random random = new Random();
         for(int i = 0; i < this.size; i++){
             int rng = random.nextInt(2);
@@ -59,100 +59,130 @@ public class GameLogic {
             	boardArray[this.size-1][this.size-1-i] = 2;
             }
         }
-        
-        /*
-         * TESTE DE UM ESTADO FINAL
-        boardArray = new int[13][13];
-        boardArray[8][0] = 1;
-        boardArray[8][1] = 1;
-        boardArray[3][2] = 2;
-        
-        boardArray[3][3] = 2;
-        boardArray[4][3] = 2;
-        boardArray[5][3] = 2;
-        boardArray[6][3] = 1;
-        boardArray[7][3] = 1;
-        boardArray[8][3] = 1;
-        boardArray[9][3] = 1;
-        
-        boardArray[4][4] = 2;
-        boardArray[5][4] = 2;
-        boardArray[6][4] = 1;
-        boardArray[7][4] = 2;
-        boardArray[8][4] = 1;
-        boardArray[9][4] = 1;
-        
-        boardArray[3][5] = 2;
-        boardArray[4][5] = 2;
-        boardArray[5][5] = 2;
-        boardArray[6][5] = 1;
-        boardArray[7][5] = 2;
-        boardArray[8][5] = 1;
-        boardArray[9][5] = 1;
-        
-        boardArray[3][6] = 2;
-        boardArray[4][6] = 2;
-        boardArray[5][6] = 2;
-        boardArray[6][6] = 1;
-        boardArray[7][6] = 1;
-        boardArray[8][6] = 2;
-        boardArray[9][6] = 1;
-        
-        boardArray[3][7] = 2;
-        boardArray[4][7] = 1;
-        boardArray[5][7] = 2;
-        boardArray[6][7] = 2;
-        boardArray[7][7] = 2;
-        boardArray[8][7] = 1;
-        boardArray[9][7] = 1;
-        
-        boardArray[4][8] = 2;
-        boardArray[5][8] = 1;
-        boardArray[7][8] = 1;
-        boardArray[8][8] = 1;
-        boardArray[9][8] = 1;
-        
-        boardArray[3][9] = 2;
-        boardArray[6][9] = 1;
-        boardArray[9][9] = 1;
-        
-        boardArray[10][10] = 1;
-        boardArray[11][10] = 1;
-        boardArray[10][11] = 1;
-        boardArray[10][12] = 1;
-         */     
 
+        //função responsável por realizar todos os testes da lógica
+        testes();
+
+    }
+
+    public void testes(){
+        //TESTE DE UM ESTADO FINAL
         /*
+            boardArray = new int[13][13];
+            boardArray[8][0] = 1;
+            boardArray[8][1] = 1;
+            boardArray[3][2] = 2;
+
+            boardArray[3][3] = 2;
+            boardArray[4][3] = 2;
+            boardArray[5][3] = 2;
+            boardArray[6][3] = 1;
+            boardArray[7][3] = 1;
+            boardArray[8][3] = 1;
+            boardArray[9][3] = 1;
+
+            boardArray[4][4] = 2;
+            boardArray[5][4] = 2;
+            boardArray[6][4] = 1;
+            boardArray[7][4] = 2;
+            boardArray[8][4] = 1;
+            boardArray[9][4] = 1;
+
+            boardArray[3][5] = 2;
+            boardArray[4][5] = 2;
+            boardArray[5][5] = 2;
+            boardArray[6][5] = 1;
+            boardArray[7][5] = 2;
+            boardArray[8][5] = 1;
+            boardArray[9][5] = 1;
+
+            boardArray[3][6] = 2;
+            boardArray[4][6] = 2;
+            boardArray[5][6] = 2;
+            boardArray[6][6] = 1;
+            boardArray[7][6] = 1;
+            boardArray[8][6] = 2;
+            boardArray[9][6] = 1;
+
+            boardArray[3][7] = 2;
+            boardArray[4][7] = 1;
+            boardArray[5][7] = 2;
+            boardArray[6][7] = 2;
+            boardArray[7][7] = 2;
+            boardArray[8][7] = 1;
+            boardArray[9][7] = 1;
+
+            boardArray[4][8] = 2;
+            boardArray[5][8] = 1;
+            boardArray[7][8] = 1;
+            boardArray[8][8] = 1;
+            boardArray[9][8] = 1;
+
+            boardArray[3][9] = 2;
+            boardArray[6][9] = 1;
+            boardArray[9][9] = 1;
+
+            boardArray[10][10] = 1;
+            boardArray[11][10] = 1;
+            boardArray[10][11] = 1;
+            boardArray[10][12] = 1;
+         */
+
+
         //verifica que apanhou uma peça na horizontal
-        boardArray[1][1] = 2;
-        boardArray[1][2] = 1;
-        boardArray[1][3] = 2;
+        /*
+            boardArray[1][1] = 2;
+            boardArray[1][2] = 1;
+            boardArray[1][3] = 2;
+            printCaughtPieces(catchPiece(1,1,2));
+        */
 
-        printCaughtPieces(catchPiece(1,1,2));
 
         //verifica que apanhou uma peça na diagonal
-        boardArray[2][2] = 2;
-        boardArray[3][3] = 1;
-        boardArray[4][4] = 2;
+        /*
+            boardArray[2][2] = 2;
+            boardArray[3][3] = 1;
+            boardArray[4][4] = 2;
+            printCaughtPieces(catchPiece(2,2,2));
+         */
 
-        printCaughtPieces(catchPiece(2,2,2));
-         */     
 
         //teste de simetria
-        /*boardArray[1][2] = 2;
-        boardArray[this.size-3][1] = 2;
-        boardArray[this.size-2][this.size-3] = 2;
-        boardArray[2][this.size-2] = 2;
-        if(verifyifKingWasBlocked(1,2, 2))
-            System.out.println("ya, bloqueia um rei");
-        verifyCaptureKing(1,2,2);*/
+        /*
+            boardArray[1][2] = 2;
+            boardArray[this.size-3][1] = 2;
+            boardArray[this.size-2][this.size-3] = 2;
+            boardArray[2][this.size-2] = 2;
+            verifyCaptureKing(1,2,2);
+        */
+
+
+        //verifica se a jogada bloqueia uma possivel captura do trono
+        /*
+            boardArray[this.size-3][1] = 2;
+            boardArray[this.size-2][this.size-3] = 2;
+            boardArray[2][this.size-2] = 2;
+            if(verifyifKingWasBlocked(1,2, 2))
+                System.out.println("Sim, bloqueia um rei.");
+        */
+
+
+        //verifica se a jogada bloqueia uma possivel captura de peça
+        /*
+            boardArray[2][2] = 2;
+            boardArray[2][3] = 1;
+            if(verifyIfPieceCaptureWasBlocked(2,4,1))
+                System.out.println("Sim, bloqueia uma peça.");
+        */
+
 
         //teste de print de jogadas possiveis
-        //printPossibleMoves(possibleMoves(0,0,1));
+        /*
+            printPossibleMoves(possibleMoves(0,0,1));
+        */
 
         //teste de printar a board para verificar o inicio random
         printBoard();
-
     }
 
     public void setBoardArray(int y, int x, int player){
@@ -214,31 +244,8 @@ public class GameLogic {
         return reducedQuad;
     }*/
 
-    private static void transpose(int[][] m) {
-
-        for (int i = 0; i < m.length; i++) {
-            for (int j = i; j < m[0].length; j++) {
-                int x = m[i][j];
-                m[i][j] = m[j][i];
-                m[j][i] = x;
-            }
-        }
-    }
-
-    private void rotate90Degree(int[][] rotatedQuad) {
-        transpose(rotatedQuad);
-
-        for (int  j = 0; j < rotatedQuad[0].length/2; j++) {
-            for (int i = 0; i < rotatedQuad.length; i++) {
-                int x = rotatedQuad[i][j];
-                rotatedQuad[i][j] = rotatedQuad[i][rotatedQuad[0].length -1 -j];
-                rotatedQuad[i][rotatedQuad[0].length -1 -j] = x;
-            }
-        }
-    }
-
     //sentido anti-horário a começar no canto superior esquerdo
-    private int solveQuad(int y, int x) {
+    /*private int solveQuad(int y, int x) {
 
         //excepção dos quadrantes genéricos
         if(x < 6 && y < 6)
@@ -261,6 +268,29 @@ public class GameLogic {
             return 4;
 
         return 0;
+    }*/
+
+    private static void transpose(int[][] m) {
+
+        for (int i = 0; i < m.length; i++) {
+            for (int j = i; j < m[0].length; j++) {
+                int x = m[i][j];
+                m[i][j] = m[j][i];
+                m[j][i] = x;
+            }
+        }
+    }
+
+    private void rotate90Degree(int[][] rotatedQuad) {
+        transpose(rotatedQuad);
+
+        for (int  j = 0; j < rotatedQuad[0].length/2; j++) {
+            for (int i = 0; i < rotatedQuad.length; i++) {
+                int x = rotatedQuad[i][j];
+                rotatedQuad[i][j] = rotatedQuad[i][rotatedQuad[0].length -1 -j];
+                rotatedQuad[i][rotatedQuad[0].length -1 -j] = x;
+            }
+        }
     }
 
     public void printPossibleMoves(ArrayList<Pair<Integer,Integer>> possibleMoves){
@@ -382,13 +412,26 @@ public class GameLogic {
         return possibleMoves;
     }
 
-    public boolean verifyifKingWasBlocked(int currentY, int currentX, int player){
+    public boolean verifyIfKingCaptureWasBlocked(int currentY, int currentX, int player){
         if(player == 1)
             return verifyCaptureKing(currentY, currentX, 2);
         else
             return verifyCaptureKing(currentY, currentX, 1);
     }
 
+    public boolean verifyIfPieceCaptureWasBlocked(int currentY, int currentX, int player){
+        ArrayList<Pair<Integer,Integer>> capturesAvoided;
+
+        if(player == 1)
+            capturesAvoided = catchPieces(currentY, currentX, 2);
+        else
+            capturesAvoided = catchPieces(currentY, currentX, 1);
+
+        if(capturesAvoided.size() > 0)
+            return true;
+        else
+            return false;
+    }
 
     public  ArrayList<Pair<Integer,Integer>> catchPieces(int currentY, int currentX, int player){
         ArrayList<Pair<Integer,Integer>> eatenPieces = new  ArrayList<Pair<Integer,Integer>>();
