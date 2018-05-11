@@ -15,21 +15,21 @@ public class GameLogic {
         return boardArray;
     }
     public int[][] colorSchemaBoardArray = new int[][]
-        {
-            {1,1,1,1,1,1,1,1,1,1,1,1,1},
-            {1,2,2,2,2,2,2,2,2,2,2,2,1},
-            {1,2,3,3,3,3,3,3,3,3,3,2,1},
-            {1,2,3,4,4,4,4,4,4,4,3,2,1},
-            {1,2,3,4,5,5,5,5,5,4,3,2,1},
-            {1,2,3,4,5,6,6,6,5,4,3,2,1},
-            {1,2,3,4,5,6,0,6,5,4,3,2,1},
-            {1,2,3,4,5,6,6,6,5,4,3,2,1},
-            {1,2,3,4,5,5,5,5,5,4,3,2,1},
-            {1,2,3,4,4,4,4,4,4,4,3,2,1},
-            {1,2,3,3,3,3,3,3,3,3,3,2,1},
-            {1,2,2,2,2,2,2,2,2,2,2,2,1},
-            {1,1,1,1,1,1,1,1,1,1,1,1,1}
-        };
+    {
+        {1,1,1,1,1,1,1,1,1,1,1,1,1},
+        {1,2,2,2,2,2,2,2,2,2,2,2,1},
+        {1,2,3,3,3,3,3,3,3,3,3,2,1},
+        {1,2,3,4,4,4,4,4,4,4,3,2,1},
+        {1,2,3,4,5,5,5,5,5,4,3,2,1},
+        {1,2,3,4,5,6,6,6,5,4,3,2,1},
+        {1,2,3,4,5,6,0,6,5,4,3,2,1},
+        {1,2,3,4,5,6,6,6,5,4,3,2,1},
+        {1,2,3,4,5,5,5,5,5,4,3,2,1},
+        {1,2,3,4,4,4,4,4,4,4,3,2,1},
+        {1,2,3,3,3,3,3,3,3,3,3,2,1},
+        {1,2,2,2,2,2,2,2,2,2,2,2,1},
+        {1,1,1,1,1,1,1,1,1,1,1,1,1}
+    };
 
     GameLogic(int size){
     	this.size = size;
@@ -143,6 +143,8 @@ public class GameLogic {
         boardArray[this.size-3][1] = 2;
         boardArray[this.size-2][this.size-3] = 2;
         boardArray[2][this.size-2] = 2;
+        if(verifyifKingWasBlocked(1,2, 2))
+            System.out.println("ya, bloqueia um rei");
         verifyCaptureKing(1,2,2);*/
 
         //teste de print de jogadas possiveis
@@ -162,14 +164,17 @@ public class GameLogic {
         int newMoveX = currentMoveX - 6;
         int[][] reducedQuad = new int[size][size];
 
+        //Isto faz uma deep Copy do tabuleiro para não ficar alterado.
         for (int i = 0; i < boardArray.length; i++)
             for (int j = 0; j < boardArray.length; j++)
                 reducedQuad[i][j] = boardArray[i][j];
 
-        for(int i = 0; i < 4; i++){
+        for(int i = 0; i < 3; i++){
             rotate90Degree(reducedQuad);
-            if(reducedQuad[currentMoveY][currentMoveX] != boardArray[currentMoveY][currentMoveX])
+            if(reducedQuad[currentMoveY][currentMoveX] != player){
+                System.out.println("entra");
                 return false;
+            }
         }
 
         System.out.println("Symmetry found!");
@@ -181,7 +186,7 @@ public class GameLogic {
         return true;
     }
 
-    public int[][] reduceQuadrant(int currentY, int currentX){
+    /*public int[][] reduceQuadrant(int currentY, int currentX){
         int [][] reducedQuad = new int[size][size];
         int quadrant = solveQuad(currentY, currentX);
         int alpha = 0;
@@ -207,7 +212,7 @@ public class GameLogic {
         }
 
         return reducedQuad;
-    }
+    }*/
 
     private static void transpose(int[][] m) {
 
@@ -377,7 +382,15 @@ public class GameLogic {
         return possibleMoves;
     }
 
-    public  ArrayList<Pair<Integer,Integer>> catchPiece(int currentY, int currentX, int player){
+    public boolean verifyifKingWasBlocked(int currentY, int currentX, int player){
+        if(player == 1)
+            return verifyCaptureKing(currentY, currentX, 2);
+        else
+            return verifyCaptureKing(currentY, currentX, 1);
+    }
+
+
+    public  ArrayList<Pair<Integer,Integer>> catchPieces(int currentY, int currentX, int player){
         ArrayList<Pair<Integer,Integer>> eatenPieces = new  ArrayList<Pair<Integer,Integer>>();
 
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
