@@ -1,18 +1,11 @@
 package view;
 
-import javafx.util.Pair;
-
 import java.awt.EventQueue;
 
+import javax.swing.JButton;
 import javax.swing.JFrame;
 import javax.swing.JPanel;
-import javax.swing.JButton;
 import javax.swing.UIManager;
-import java.awt.event.ActionListener;
-import java.awt.event.ActionEvent;
-import java.io.BufferedReader;
-import java.io.IOException;
-import java.io.InputStreamReader;
 
 public class Menu {
 
@@ -50,12 +43,14 @@ public class Menu {
 		frmMorelli.setBounds(100, 100, 821, 587);
 		frmMorelli.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMorelli.getContentPane().setLayout(null);
-
-		GameLogic game = new GameLogic(13);
 		
-		JPanel board = new Board(13, 500, game);
+		int size = 13;
+
+		GameLogic game = new GameLogic(size);
+		
+		JPanel board = new Board(size, 500, game);
 		board.setBackground(UIManager.getColor("MenuBar.shadow"));
-		board.setBounds(21, 24, 500, 500);
+		board.setBounds(21, 24, 494, 494);
 		frmMorelli.getContentPane().add(board);
 		
 		JButton startBtn = new JButton("New Game");

@@ -6,16 +6,18 @@ import java.awt.Graphics2D;
 
 public class Piece {
 
-	private int x;
-	private int y;
-	private int size;
-	private Color cl;
+	public int x;
+	public int y;
+	public int size;
+	public Color cl;
+	public int player;
 	
-	public Piece(int x, int y, int size, Color cl){		
+	public Piece(int x, int y, int size, Color cl, int player){		
 		this.size = size;	
 		this.cl = cl;
 		this.x = x;
 		this.y = y;
+		this.player = player;
 	}
 	
 	public void draw(Graphics g){

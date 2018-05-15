@@ -213,6 +213,18 @@ public class GameLogic {
     }
 
     public boolean makeMove(int actualY, int actualX, int newY, int newX, int player){
+    	
+    	if(actualY < 0 || actualY > size - 1)
+    		return false;
+    	if(actualX < 0 || actualX > size - 1)
+    		return false;
+    	if(newY < 0 || newY > size - 1)
+    		return false;
+    	if(newX < 0 || newX > size - 1)
+    		return false;
+    	
+        boardArray[actualY][actualX] = 0;
+        boardArray[newY][newX] = player;
         return true;
     }
 
