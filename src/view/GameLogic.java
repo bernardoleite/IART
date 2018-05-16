@@ -2,6 +2,7 @@ package view;
 
 import javafx.util.Pair;
 
+import java.text.DecimalFormat;
 import java.util.ArrayList;
 import java.util.Random;
 
@@ -179,6 +180,20 @@ public class GameLogic {
         //teste de print de jogadas possiveis
         /*
             printPossibleMoves(possibleMoves(0,0,1));
+        */
+
+        //AI Heuristic test
+        /*
+        Ai ai = new Ai(this);
+
+        boardArray[1][11] = 2;
+        boardArray[3][9] = 2;
+        boardArray[4][8] = 1;
+        printCaughtPieces(catchPieces(2,10,1));
+
+        ai.executeHeuristic(2,10,1);
+        System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
+        System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
         */
 
         //teste de printar a board para verificar o inicio random
@@ -431,7 +446,7 @@ public class GameLogic {
             return verifyCaptureKing(currentY, currentX, 1);
     }
 
-    public boolean verifyIfPieceCaptureWasBlocked(int currentY, int currentX, int player){
+    public ArrayList<Pair<Integer,Integer>> verifyIfPieceCaptureWasBlocked(int currentY, int currentX, int player){
         ArrayList<Pair<Integer,Integer>> capturesAvoided;
 
         if(player == 1)
@@ -439,10 +454,7 @@ public class GameLogic {
         else
             capturesAvoided = catchPieces(currentY, currentX, 1);
 
-        if(capturesAvoided.size() > 0)
-            return true;
-        else
-            return false;
+        return capturesAvoided;
     }
 
     public  ArrayList<Pair<Integer,Integer>> catchPieces(int currentY, int currentX, int player){
