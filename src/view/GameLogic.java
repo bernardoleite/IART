@@ -234,24 +234,46 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
          */
 
+        //AI Heuristic test for begin of the Game
+        /*
+            Ai ai = new Ai(this);
+
+            ai.executeHeuristic(2,4, 1);
+            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic(1)));
+            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic(1)));
+        */
+
+
 
         //teste de printar a board para verificar o inicio random
         printBoard();
+    }
+
+    public void setNewBoardMatrix(int[][] newMatrix){
+        this.boardArray = newMatrix;
     }
 
     public void setBoardArray(int y, int x, int player){
         boardArray[y][x] = player;
     }
 
-    public boolean verifyCaptureKing(int currentMoveY, int currentMoveX, int player){
-        int newMoveY = currentMoveY - 6;
-        int newMoveX = currentMoveX - 6;
-        int[][] reducedQuad = new int[size][size];
+    public int[][] matrixDeepCopy(int[][] matrix){
+        int[][] newMatrix = new int[size][size];
 
         //Isto faz uma deep Copy do tabuleiro para não ficar alterado.
         for (int i = 0; i < boardArray.length; i++)
             for (int j = 0; j < boardArray.length; j++)
-                reducedQuad[i][j] = boardArray[i][j];
+                newMatrix[i][j] = boardArray[i][j];
+
+        return newMatrix;
+    }
+
+    public boolean verifyCaptureKing(int currentMoveY, int currentMoveX, int player){
+        int newMoveY = currentMoveY - 6;
+        int newMoveX = currentMoveX - 6;
+        int[][] reducedQuad;
+
+        reducedQuad = matrixDeepCopy(boardArray);
 
         for(int i = 0; i < 3; i++){
             rotate90Degree(reducedQuad);
@@ -281,6 +303,7 @@ public class GameLogic {
         boardArray[newY][newX] = player;
         return true;
     }
+
 
     /*public int[][] reduceQuadrant(int currentY, int currentX){
         int [][] reducedQuad = new int[size][size];
@@ -558,6 +581,36 @@ public class GameLogic {
                 }
 
         return eatenPieces;
+    }
+
+    public boolean verifyDefeat(int player){
+        if(player == 1)
+            player = 2;
+        else
+            player = 1;
+
+        if(verifyVictoryOrDrawState(player) == 1)
+            return true;
+        else
+            return false;
+    }
+
+    public int verifyVictoryOrDrawState(int player){
+        for(int i = 0; i < boardArray.length; i++){
+            for (int j = 0; i < boardArray[i].length; j++){
+                if(boardArray[i][j] == player){
+                    if(possibleMoves(i,j,player).size() > 0)
+                        return 0;
+                }
+            }
+        }
+
+        if(boardArray[6][6] == player)
+            return 1;
+        else if(boardArray[6][6] == 0)
+            return -1;
+        else
+            return -1;
     }
 
     public void printBoard(){

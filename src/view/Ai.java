@@ -1,8 +1,29 @@
 package view;
 
+import javafx.util.Pair;
+
 import java.text.DecimalFormat;
+import java.util.ArrayList;
 
 public class Ai {
+
+    private class BestMove{
+        private Pair<Integer, Integer> originMove;
+        private Pair<Integer, Integer> newMove;
+
+        BestMove(Pair<Integer, Integer> originMove, Pair<Integer, Integer> newMove){
+            this.originMove = originMove;
+            this.newMove = newMove;
+        }
+
+        public Pair<Integer, Integer> getOriginMove() {
+            return originMove;
+        }
+
+        public Pair<Integer, Integer> getNewMove() {
+            return newMove;
+        }
+    }
 
     private int mode = 0; //0 for ofensive mode; 1 for defensive mode;
     private double pieceCaptureValue = 0.0;
@@ -45,17 +66,175 @@ public class Ai {
         blockPieceCaptureValue = game.verifyIfPieceCaptureWasBlocked(y,x,player).size() / 6.0;
     }
 
-    public double getDefensiveHeuristic(){
-        return blockKingCaptureValue * 0.4 + kingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
-    }
+    public double getDefensiveHeuristic(int player){
 
-    public double getOfensiveHeuristic(){
-
+        System.out.println("Defensive Heuristic Values");
         System.out.println("kingCaptureValue: " + kingCaptureValue);
         System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
         System.out.println("pieceCaptureValue: " + pieceCaptureValue);
         System.out.println("blockPieceCaptureValue: " + blockPieceCaptureValue);
+        System.out.println();
 
-        return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
+        if(game.verifyVictoryOrDrawState(player) == 1)
+            return 1.0;
+        else if(game.verifyVictoryOrDrawState(player) == -1)
+            return -2.0;
+        else if(game.verifyDefeat(player))
+            return -1.0;
+        else{
+            return blockKingCaptureValue * 0.4 + kingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
+        }
+    }
+
+    public double getOfensiveHeuristic(int player){
+
+        System.out.println("Ofensive Heuristic Values");
+        System.out.println("kingCaptureValue: " + kingCaptureValue);
+        System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
+        System.out.println("pieceCaptureValue: " + pieceCaptureValue);
+        System.out.println("blockPieceCaptureValue: " + blockPieceCaptureValue);
+        System.out.println();
+
+        if(game.verifyVictoryOrDrawState(player) == 1)
+            return 1.0;
+        else if(game.verifyVictoryOrDrawState(player) == -1)
+            return -2.0;
+        else if(game.verifyDefeat(player))
+            return -1.0;
+        else
+            return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
+    }
+
+    public double minimax( Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax){
+
+        executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
+
+        double heuristicValue = getOfensiveHeuristic(player);
+
+        if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
+            return heuristicValue;
+
+        if(isMax){
+
+
+
+            double best = -3.0;
+
+            ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
+
+            //for das possible moves do jogador atual
+            for(int i = 0; i < game.getBoardArray().length; i++){
+                for(int j = 0; j < game.getBoardArray()[i].length; j++){
+                    if(game.getBoardArray()[i][j] == player){
+                        currentPossibleMoves = game.possibleMoves(i,j,player);
+                        for (int k = 0; k < currentPossibleMoves.size(); k++){
+                            int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
+
+                            //make move
+                            game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                            if(player == 1)
+                                best =  Math.max(best, minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));
+                            else
+                                best =  Math.max(best, minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));
+
+
+                            //undo move
+                            game.setNewBoardMatrix(boardGameCopy);
+
+                        }
+                    }
+                }
+            }
+            return best;
+
+
+
+        }
+        else{
+
+
+
+            double best = 3.0;
+
+            ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
+
+            //for das possible moves do jogador atual
+            for(int i = 0; i < game.getBoardArray().length; i++){
+                for(int j = 0; j < game.getBoardArray()[i].length; j++){
+                    if(game.getBoardArray()[i][j] == player){
+                        currentPossibleMoves = game.possibleMoves(i,j,player);
+                        for (int k = 0; k < currentPossibleMoves.size(); k++){
+                            int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
+
+                            //make move
+                            game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                            if(player == 1)
+                                best =  Math.min(best, minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));
+                            else
+                                best =  Math.min(best, minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));
+
+
+                            //undo move
+                            game.setNewBoardMatrix(boardGameCopy);
+
+                        }
+                    }
+                }
+            }
+
+
+            return best;
+        }
+    }
+
+    public BestMove findBestMove(int player){
+
+        ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
+        Pair<Integer,Integer> currentPiece = new Pair<>(-1,-1);
+        Pair<Integer,Integer> bestPieceMove = new Pair<>(-1,-1);
+        double currentValue;
+        double bestValue = -1.0;
+
+        for(int i = 0; i < game.getBoardArray().length; i++){
+            for(int j = 0; j < game.getBoardArray()[i].length; j++){
+                if(game.getBoardArray()[i][j] == player){
+                    currentPossibleMoves = game.possibleMoves(i,j,player);
+                    for (int k = 0; k < currentPossibleMoves.size(); k++){
+                        int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
+
+                        //make move
+                        game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                        currentValue = minimax(currentPossibleMoves.get(k), player, 0, false);
+
+                        //undo move
+                        game.setNewBoardMatrix(boardGameCopy);
+
+
+                        if(currentValue == 1.0)
+                        {
+                            currentPiece = new Pair<>(i,j);
+                            bestPieceMove = currentPossibleMoves.get(k);
+                            bestValue = currentValue;
+
+                            System.out.println("BestValue (Win Condition): " + bestValue);
+                            return new BestMove(currentPiece, bestPieceMove);
+
+                        }
+                        else if(currentValue > bestValue){
+                            currentPiece = new Pair<>(i,j);
+                            bestPieceMove = currentPossibleMoves.get(k);
+                            bestValue = currentValue;
+                        }
+                    }
+                }
+            }
+        }
+
+        System.out.println("BestValue: " + bestValue);
+        return new BestMove(currentPiece, bestPieceMove);
+
     }
 }
