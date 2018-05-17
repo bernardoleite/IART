@@ -104,6 +104,7 @@ public class Board extends JPanel {
 		selected = null;
 		swapPlayer();
 		checkTrap(moveY, moveX, player);
+		checkCapture(moveY, moveX, player);
 		/*
 		 * TODO
 		 * Capture King
@@ -112,16 +113,17 @@ public class Board extends JPanel {
 		setupPieces();
 	}
 	
-	public void checkTrap(int moveY, int moveX, int player){
+	private void checkCapture(int moveY, int moveX, int player){
+		if(logic.verifyCaptureKing(moveY, moveX, player)){
+			
+		}
+	}
+	
+	private void checkTrap(int moveY, int moveX, int player){
 		ArrayList<Pair<Integer,Integer>> trapped = logic.catchPieces(moveY, moveX, player);
 		for(int i = 0; i < trapped.size(); i++){
-			if(logic.getBoardArray()[trapped.get(i).getKey()][trapped.get(i).getValue()] == 1){
-				logic.setBoardArray(trapped.get(i).getKey(), trapped.get(i).getValue(), 2);
-				//Check recursively
-				checkTrap(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
-			}
-			if(logic.getBoardArray()[trapped.get(i).getKey()][trapped.get(i).getValue()] == 2){
-				logic.setBoardArray(trapped.get(i).getKey(), trapped.get(i).getValue(), 1);
+			if(logic.getBoardArray()[trapped.get(i).getKey()][trapped.get(i).getValue()] != player){
+				logic.setBoardArray(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
 				//Check recursively
 				checkTrap(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
 			}
