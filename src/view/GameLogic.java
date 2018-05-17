@@ -182,19 +182,58 @@ public class GameLogic {
             printPossibleMoves(possibleMoves(0,0,1));
         */
 
-        //AI Heuristic test
+        //AI Heuristic test for pieceCapture
+        /*
+            Ai ai = new Ai(this);
+
+            boardArray[1][11] = 2;
+            boardArray[3][9] = 2;
+            boardArray[4][8] = 1;
+            printCaughtPieces(catchPieces(2,10,1));
+
+            ai.executeHeuristic(2,10,1);
+            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
+            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
+        */
+
+        //AI Heuristic test for blockKingCapture
+        /*
+            Ai ai = new Ai(this);
+
+            boardArray[this.size-3][1] = 2;
+            boardArray[this.size-2][this.size-3] = 2;
+            boardArray[2][this.size-2] = 2;
+
+            ai.executeHeuristic(1,2, 1);
+            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
+            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
+        */
+
+        //AI Heuristic test for KingCapture
         /*
         Ai ai = new Ai(this);
 
-        boardArray[1][11] = 2;
-        boardArray[3][9] = 2;
-        boardArray[4][8] = 1;
-        printCaughtPieces(catchPieces(2,10,1));
+            boardArray[this.size-3][1] = 2;
+            boardArray[this.size-2][this.size-3] = 2;
+            boardArray[2][this.size-2] = 2;
 
-        ai.executeHeuristic(2,10,1);
-        System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
-        System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
+            ai.executeHeuristic(1,2, 2);
+            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
+            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
         */
+
+        //AI Heuristic test for blockPieceCapture
+        /*
+            Ai ai = new Ai(this);
+
+            boardArray[2][2] = 2;
+            boardArray[2][3] = 1;
+
+            ai.executeHeuristic(2,4, 1);
+            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
+            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
+         */
+
 
         //teste de printar a board para verificar o inicio random
         printBoard();
