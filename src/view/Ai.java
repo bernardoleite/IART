@@ -7,11 +7,15 @@ import java.util.ArrayList;
 
 public class Ai {
 
-    private class BestMove{
+    private boolean endOfDepth = false;
+
+    public class BestMove{
         private Pair<Integer, Integer> originMove;
         private Pair<Integer, Integer> newMove;
 
-        BestMove(Pair<Integer, Integer> originMove, Pair<Integer, Integer> newMove){
+        public BestMove(){}
+
+        public BestMove(Pair<Integer, Integer> originMove, Pair<Integer, Integer> newMove){
             this.originMove = originMove;
             this.newMove = newMove;
         }
@@ -22,6 +26,12 @@ public class Ai {
 
         public Pair<Integer, Integer> getNewMove() {
             return newMove;
+        }
+
+        public void printBestMove(){
+            System.out.println("Best move is combo (y,x):");
+            System.out.println("Origin Move: (" + originMove.getKey() + "," + originMove.getValue() + ")");
+            System.out.println("New Best Move: (" + newMove.getKey() + "," + newMove.getValue() + ")");
         }
     }
 
@@ -68,27 +78,27 @@ public class Ai {
 
     public double getDefensiveHeuristic(int player){
 
-        System.out.println("Defensive Heuristic Values");
+        /*System.out.println("Defensive Heuristic Values");
         System.out.println("kingCaptureValue: " + kingCaptureValue);
         System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
         System.out.println("pieceCaptureValue: " + pieceCaptureValue);
         System.out.println("blockPieceCaptureValue: " + blockPieceCaptureValue);
-        System.out.println();
+        System.out.println();*/
 
-        if(game.verifyVictoryOrDrawState(player) == 1)
+        /*if(game.verifyVictoryOrDrawState(player) == 1)
             return 1.0;
         else if(game.verifyVictoryOrDrawState(player) == -1)
             return -2.0;
         else if(game.verifyDefeat(player))
             return -1.0;
-        else{
-            return blockKingCaptureValue * 0.4 + kingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
-        }
+        else{*/
+            return blockKingCaptureValue * 0.4 + kingCaptureValue * 0.3 + pieceCaptureValue * 0.10 + blockPieceCaptureValue * 0.20;
+        //}
     }
 
     public double getOfensiveHeuristic(int player){
 
-        System.out.println("Ofensive Heuristic Values");
+        /*System.out.println("Ofensive Heuristic Values");
         System.out.println("kingCaptureValue: " + kingCaptureValue);
         System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
         System.out.println("pieceCaptureValue: " + pieceCaptureValue);
@@ -101,22 +111,29 @@ public class Ai {
             return -2.0;
         else if(game.verifyDefeat(player))
             return -1.0;
-        else
-            return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.15 + blockPieceCaptureValue * 0.15;
+        else*/
+            return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.20 + blockPieceCaptureValue * 0.10;
     }
 
     public double minimax( Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax){
 
-        executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
+        if(possibleMove !=  null){
+            executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
+        }
 
-        double heuristicValue = getOfensiveHeuristic(player);
+            double heuristicValue = getOfensiveHeuristic(player);
 
-        if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
-            return heuristicValue;
+            if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
+                return heuristicValue;
+
+
+
+            if(depth >= 1){
+                return heuristicValue;
+            }
+
 
         if(isMax){
-
-
 
             double best = -3.0;
 
@@ -128,19 +145,35 @@ public class Ai {
                     if(game.getBoardArray()[i][j] == player){
                         currentPossibleMoves = game.possibleMoves(i,j,player);
                         for (int k = 0; k < currentPossibleMoves.size(); k++){
+
                             int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
 
                             //make move
                             game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                            /*if(depth < 1){
+                                System.out.println();
+                                System.out.println("Player: " + player);
+                                System.out.println("Minimax Working.");
+                                System.out.println("Possible move is:");
+                                System.out.println("Origin Move: (" + i + "," + j + ")");
+                                System.out.println("Possible Move analized: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
+
+                                System.out.println();
+                                game.printBoard();
+                                System.out.println();
+                            }*/
 
                             if(player == 1)
                                 best =  Math.max(best, minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));
                             else
                                 best =  Math.max(best, minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));
 
+                            //System.out.println("Best: " + best);
 
                             //undo move
                             game.setNewBoardMatrix(boardGameCopy);
+
 
                         }
                     }
@@ -165,15 +198,31 @@ public class Ai {
                     if(game.getBoardArray()[i][j] == player){
                         currentPossibleMoves = game.possibleMoves(i,j,player);
                         for (int k = 0; k < currentPossibleMoves.size(); k++){
+
                             int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
 
                             //make move
                             game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
+                            /*if(depth < 1) {
+                                System.out.println();
+                                System.out.println("Player:" + player);
+                                System.out.println("Minimax Working.");
+                                System.out.println("Possible move is:");
+                                System.out.println("Origin Move: (" + i + "," + j + ")");
+                                System.out.println("Possible Move analized: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
+                                System.out.println();
+                                game.printBoard();
+                                System.out.println();
+                            }*/
+
+
                             if(player == 1)
-                                best =  Math.min(best, minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));
+                                {best =  Math.min(best, minimax(null, 2, depth + 1, !isMax));}
                             else
-                                best =  Math.min(best, minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));
+                                {best =  Math.min(best, minimax(null, 1, depth + 1, !isMax));}
+
+                            //System.out.println("Best: " + best);
 
 
                             //undo move
@@ -183,7 +232,6 @@ public class Ai {
                     }
                 }
             }
-
 
             return best;
         }
@@ -198,6 +246,7 @@ public class Ai {
         double bestValue = -1.0;
 
         for(int i = 0; i < game.getBoardArray().length; i++){
+            loop:
             for(int j = 0; j < game.getBoardArray()[i].length; j++){
                 if(game.getBoardArray()[i][j] == player){
                     currentPossibleMoves = game.possibleMoves(i,j,player);
@@ -207,10 +256,22 @@ public class Ai {
                         //make move
                         game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
-                        currentValue = minimax(currentPossibleMoves.get(k), player, 0, false);
+
+                        if(player == 2)
+                            currentValue = minimax(currentPossibleMoves.get(k), 1, 0, false);
+                        else
+                            currentValue = minimax(currentPossibleMoves.get(k), 2, 0, false);
+
+
+                        /*System.out.println("Possible move: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
+                        System.out.println("Possible best Value: " + currentValue);*/
+
 
                         //undo move
                         game.setNewBoardMatrix(boardGameCopy);
+
+                        /*if(k > 0)
+                            break loop;*/
 
 
                         if(currentValue == 1.0)

@@ -144,18 +144,18 @@ public class GameLogic {
             boardArray[2][2] = 2;
             boardArray[3][3] = 1;
             boardArray[4][4] = 2;
-            printCaughtPieces(catchPiece(2,2,2));
-         */
+            printCaughtPieces(catchPieces(2,2,2));
+        */
+
 
 
         //teste de simetria
-        /*
-            boardArray[1][2] = 2;
-            boardArray[this.size-3][1] = 2;
-            boardArray[this.size-2][this.size-3] = 2;
-            boardArray[2][this.size-2] = 2;
+            boardArray[1][2] = 1;
+            //boardArray[this.size-3][1] = 2;
+            boardArray[this.size-2][this.size-3] = 1;
+            boardArray[2][this.size-2] = 1;
             verifyCaptureKing(1,2,2);
-        */
+
 
 
         //verifica se a jogada bloqueia uma possivel captura do trono
@@ -244,9 +244,34 @@ public class GameLogic {
         */
 
 
+        //Full Ai test for pieceCapture
 
-        //teste de printar a board para verificar o inicio random
-        printBoard();
+            Ai ai = new Ai(this);
+
+            boardArray[1][11] = 2;
+            boardArray[3][9] = 2;
+            boardArray[4][8] = 1;
+            printCaughtPieces(catchPieces(2,10,1));
+
+            //teste de printar a board para verificar o inicio random
+            printBoard();
+
+            System.out.println();
+            System.out.println();
+
+            /*ai.executeHeuristic(2,2,1);
+            System.out.println(ai.getOfensiveHeuristic(1));*/
+
+            Ai.BestMove bestMove = ai.findBestMove(1);
+            bestMove.printBestMove();
+
+            //teste de printar a board para verificar o inicio random
+            printBoard();
+
+
+
+
+
     }
 
     public void setNewBoardMatrix(int[][] newMatrix){
@@ -278,7 +303,7 @@ public class GameLogic {
         for(int i = 0; i < 3; i++){
             rotate90Degree(reducedQuad);
             if(reducedQuad[currentMoveY][currentMoveX] != player){
-                System.out.println("entra");
+                //System.out.println("entra");
                 return false;
             }
         }
@@ -524,6 +549,9 @@ public class GameLogic {
 
         //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
         //Verificação na horizontal da posição atual para a frente.
+        if(getBoardArray()[currentY][currentX] != player)
+            return eatenPieces;
+
         if(currentX < size-2)
             if(getBoardArray()[currentY][currentX+1] != player && getBoardArray()[currentY][currentX+1] != 0)
                 if(getBoardArray()[currentY][currentX+2] == player && getBoardArray()[currentY][currentX+2] != 0){
