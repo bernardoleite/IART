@@ -150,11 +150,11 @@ public class GameLogic {
 
 
         //teste de simetria
-            boardArray[1][2] = 1;
+            /*boardArray[1][2] = 1;
             //boardArray[this.size-3][1] = 2;
             boardArray[this.size-2][this.size-3] = 1;
             boardArray[2][this.size-2] = 1;
-            verifyCaptureKing(1,2,2);
+            verifyCaptureKing(1,2,2);*/
 
 
 
@@ -251,7 +251,15 @@ public class GameLogic {
             boardArray[1][11] = 2;
             boardArray[3][9] = 2;
             boardArray[4][8] = 1;
-            printCaughtPieces(catchPieces(2,10,1));
+            boardArray[6][7] = 2;
+            boardArray[3][3] = 2;
+            boardArray[9][3] = 2;
+
+            /*boardArray[9][1] = 1;
+        boardArray[2][2] = 1;
+        boardArray[10][2] = 1;*/
+
+        printCaughtPieces(catchPieces(2,10,1));
 
             //teste de printar a board para verificar o inicio random
             printBoard();
@@ -308,7 +316,7 @@ public class GameLogic {
             }
         }
 
-        System.out.println("Symmetry found!");
+        //System.out.println("Symmetry found!");
 
         return true;
     }

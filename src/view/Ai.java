@@ -115,11 +115,11 @@ public class Ai {
             return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.20 + blockPieceCaptureValue * 0.10;
     }
 
-    public double minimax( Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax){
+    public double minimax(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax){
 
-        if(possibleMove !=  null){
+            ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
+
             executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
-        }
 
             double heuristicValue = getOfensiveHeuristic(player);
 
@@ -128,7 +128,7 @@ public class Ai {
 
 
 
-            if(depth >= 1){
+            if(depth >= 2){
                 return heuristicValue;
             }
 
@@ -204,23 +204,10 @@ public class Ai {
                             //make move
                             game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
-                            /*if(depth < 1) {
-                                System.out.println();
-                                System.out.println("Player:" + player);
-                                System.out.println("Minimax Working.");
-                                System.out.println("Possible move is:");
-                                System.out.println("Origin Move: (" + i + "," + j + ")");
-                                System.out.println("Possible Move analized: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
-                                System.out.println();
-                                game.printBoard();
-                                System.out.println();
-                            }*/
-
-
                             if(player == 1)
-                                {best =  Math.min(best, minimax(null, 2, depth + 1, !isMax));}
+                                {best =  Math.min(best, -minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));}
                             else
-                                {best =  Math.min(best, minimax(null, 1, depth + 1, !isMax));}
+                                {best =  Math.min(best, -minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));}
 
                             //System.out.println("Best: " + best);
 
@@ -246,7 +233,6 @@ public class Ai {
         double bestValue = -1.0;
 
         for(int i = 0; i < game.getBoardArray().length; i++){
-            loop:
             for(int j = 0; j < game.getBoardArray()[i].length; j++){
                 if(game.getBoardArray()[i][j] == player){
                     currentPossibleMoves = game.possibleMoves(i,j,player);
@@ -256,23 +242,14 @@ public class Ai {
                         //make move
                         game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
-
                         if(player == 2)
                             currentValue = minimax(currentPossibleMoves.get(k), 1, 0, false);
                         else
                             currentValue = minimax(currentPossibleMoves.get(k), 2, 0, false);
 
 
-                        /*System.out.println("Possible move: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
-                        System.out.println("Possible best Value: " + currentValue);*/
-
-
                         //undo move
                         game.setNewBoardMatrix(boardGameCopy);
-
-                        /*if(k > 0)
-                            break loop;*/
-
 
                         if(currentValue == 1.0)
                         {
@@ -284,7 +261,8 @@ public class Ai {
                             return new BestMove(currentPiece, bestPieceMove);
 
                         }
-                        else if(currentValue > bestValue){
+
+                        if(currentValue > bestValue){
                             currentPiece = new Pair<>(i,j);
                             bestPieceMove = currentPossibleMoves.get(k);
                             bestValue = currentValue;
