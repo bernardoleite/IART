@@ -7,12 +7,15 @@ import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
+import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import javafx.util.Pair;
 
 public class Board extends JPanel {	
 	
+	private Overlay overlay;
+	private int king = 0;
 	private int nextPlayer = 1;
 	private GameLogic logic;
 	private Piece selected;
@@ -22,8 +25,9 @@ public class Board extends JPanel {
 	private ArrayList<Tile> tiles;
 	private ArrayList<Piece> pieces;
 	
-	public Board(int size, int pixels, GameLogic logic){
+	public Board(int size, int pixels, GameLogic logic, Overlay overlay){
 		
+		this.overlay = overlay;
 		this.logic = logic;
 		this.size = size;
 		this.pixels = pixels;
@@ -44,6 +48,9 @@ public class Board extends JPanel {
 		
 		//Initialise Pieces
 		setupPieces();
+		
+		//Initialise Overlay
+		updateOverlay();
 		
 		addMouseListener(new MouseAdapter() {
 
@@ -107,15 +114,28 @@ public class Board extends JPanel {
 		checkCapture(moveY, moveX, player);
 		/*
 		 * TODO
-		 * Capture King
 		 * Detect end of game
 		 */
+		checkEnd();
 		setupPieces();
+		updateOverlay();
+	}
+	
+	private void checkEnd(){
+		
+	}
+	
+	private void updateOverlay(){
+		//Next Player Text
+		if(this.nextPlayer == 1)
+			overlay.playerTurn.setText("NEXT PLAYER: WHITE");
+		if(this.nextPlayer == 2)
+			overlay.playerTurn.setText("NEXT PLAYER: BLACK");
 	}
 	
 	private void checkCapture(int moveY, int moveX, int player){
 		if(logic.verifyCaptureKing(moveY, moveX, player)){
-			
+			king = player;
 		}
 	}
 	
@@ -196,11 +216,22 @@ public class Board extends JPanel {
 			int tX = coorToId(this.selected.x);
 			int tY = coorToId(this.selected.y);
 			ArrayList<Pair<Integer,Integer>> moves = logic.possibleMoves(tY, tX, this.selected.player);
+			
 			g.setColor(this.selected.cl);
 			int overlaySize = 20;
 			for(int i = 0; i < moves.size(); i++){
 		        g.fillOval(idToCoor(moves.get(i).getValue()) + overlaySize/6, idToCoor(moves.get(i).getKey()) + overlaySize/6, overlaySize, overlaySize);
 			}
+		}
+		
+		//Draw King
+		if(king != 0){
+			if(king == 1)
+				g.setColor(Color.WHITE);
+			if(king == 2)
+				g.setColor(Color.BLACK);
+			int kingSize = 20;
+			g.fillRect(tileSize*6 + tileSize/2 - kingSize/2, tileSize*6 + tileSize/2 - kingSize/2, kingSize, kingSize);
 		}
 		
 	}

@@ -149,12 +149,12 @@ public class GameLogic {
 
 
 
-        //teste de simetria
+        /*teste de simetria
             boardArray[1][2] = 1;
             //boardArray[this.size-3][1] = 2;
             boardArray[this.size-2][this.size-3] = 1;
             boardArray[2][this.size-2] = 1;
-            verifyCaptureKing(1,2,2);
+            verifyCaptureKing(1,2,2);*/
 
 
 
@@ -244,7 +244,7 @@ public class GameLogic {
         */
 
 
-        //Full Ai test for pieceCapture
+        /*Full Ai test for pieceCapture
 
             Ai ai = new Ai(this);
 
@@ -259,11 +259,11 @@ public class GameLogic {
             System.out.println();
             System.out.println();
 
-            /*ai.executeHeuristic(2,2,1);
-            System.out.println(ai.getOfensiveHeuristic(1));*/
+            //ai.executeHeuristic(2,2,1);
+            //System.out.println(ai.getOfensiveHeuristic(1));
 
             Ai.BestMove bestMove = ai.findBestMove(1);
-            bestMove.printBestMove();
+            bestMove.printBestMove();*/
 
             //teste de printar a board para verificar o inicio random
             printBoard();
