@@ -22,6 +22,8 @@ public class Board extends JPanel {
 		CvC
 	}
 	
+	private boolean pruning;
+	private int depth;
 	private boolean blockAll = false;
 	private Ai ai;
 	private Mode mode;
@@ -35,7 +37,9 @@ public class Board extends JPanel {
 	private ArrayList<Tile> tiles;
 	private ArrayList<Piece> pieces;
 	
-	public Board(int size, int pixels, GameLogic logic, Overlay overlay, Mode mode){
+	public Board(int size, int pixels, GameLogic logic, Overlay overlay, Mode mode, boolean pruning, int depth){
+		this.pruning = pruning;
+		this.depth = depth;
 		this.mode = mode;
 		this.overlay = overlay;
 		this.logic = logic;
@@ -165,7 +169,9 @@ public class Board extends JPanel {
 		if(blockAll)
 			return;
 		
-		BestMove move = this.ai.findBestMove(this.nextPlayer, true, 2);
+		System.out.println(this.logic);
+		
+		BestMove move = this.ai.findBestMove(this.nextPlayer, this.pruning, this.depth);
 		this.logic.makeMove(move.getOriginMove().getKey(), move.getOriginMove().getValue(), move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
 		
 		checkTrap(move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);

@@ -31,6 +31,7 @@ public class Menu {
 	private GameLogic game;
 	private JComboBox modeBox;
 	private JTextField cpuDepthInput;
+	private JRadioButton pruningToggle;
 
 	/**
 	 * Launch the application.
@@ -73,9 +74,10 @@ public class Menu {
 		cpuDepthInput.setColumns(10);
 		
 		//Pruning Toggle
-		JRadioButton rdbtnNewRadioButton = new JRadioButton("Pruning");
-		rdbtnNewRadioButton.setBounds(588, 129, 121, 23);
-		frmMorelli.getContentPane().add(rdbtnNewRadioButton);
+		pruningToggle = new JRadioButton("Pruning");
+		pruningToggle.setSelected(true);
+		pruningToggle.setBounds(588, 129, 121, 23);
+		frmMorelli.getContentPane().add(pruningToggle);
 		
 		//Mode Box
 		modeBox = new JComboBox();
@@ -105,22 +107,25 @@ public class Menu {
 		
 		if(!firstTime){
 			frmMorelli.getContentPane().remove(board);
-			board = null;
+			frmMorelli.getContentPane().remove(overlay.CPUTurn);
+			frmMorelli.getContentPane().remove(overlay.playerTurn);
 		}else
 			firstTime = false;
 		
 		overlay = initializeOverlay();
 		game = new GameLogic(size);
+		boolean pruning = pruningToggle.isSelected();
+		int depth = Integer.parseInt(cpuDepthInput.getText());
 		
 		switch((String)modeBox.getSelectedItem()){
 		case "Player vs Player":
-			board = new Board(size, 500, game, overlay, Mode.PvP);
+			board = new Board(size, 500, game, overlay, Mode.PvP, pruning, depth);
 			break;
 		case "Player vs CPU":
-			board = new Board(size, 500, game, overlay, Mode.PvC);
+			board = new Board(size, 500, game, overlay, Mode.PvC, pruning, depth);
 			break;
 		case "CPU vs CPU":
-			board = new Board(size, 500, game, overlay, Mode.CvC);
+			board = new Board(size, 500, game, overlay, Mode.CvC, pruning, depth);
 			break;
 		}
 		
