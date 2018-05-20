@@ -326,7 +326,7 @@ public class GameLogic {
 
         ArrayList<Pair<Integer,Integer>>  possibleMoves = new ArrayList<Pair<Integer,Integer>>();
 
-        while(this.boardArray[rndY][rndX] != player &&  possibleMoves.size() < 0){
+        while(this.boardArray[rndY][rndX] != player ||  possibleMoves.size() <= 0){
             rndY = rand.nextInt(11);
             rndX = rand.nextInt(11);
             possibleMoves = possibleMoves(rndY, rndX, player);
@@ -335,7 +335,7 @@ public class GameLogic {
         int rndMove;
 
         if(possibleMoves.size() > 0)
-            rndMove = rand.nextInt( possibleMoves.size());
+            rndMove = rand.nextInt(possibleMoves.size());
         else
             rndMove = 0;
 
