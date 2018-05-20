@@ -2,7 +2,6 @@ package view;
 
 import javafx.util.Pair;
 
-import java.text.DecimalFormat;
 import java.util.ArrayList;
 
 public class Ai {
@@ -78,32 +77,18 @@ public class Ai {
 
     public double getDefensiveHeuristic(int player){
 
-        /*System.out.println("Defensive Heuristic Values");
-        System.out.println("kingCaptureValue: " + kingCaptureValue);
-        System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
-        System.out.println("pieceCaptureValue: " + pieceCaptureValue);
-        System.out.println("blockPieceCaptureValue: " + blockPieceCaptureValue);
-        System.out.println();*/
-
-        /*if(game.verifyVictoryOrDrawState(player) == 1)
+        if(game.verifyVictoryOrDrawState(player) == 1)
             return 1.0;
         else if(game.verifyVictoryOrDrawState(player) == -1)
             return -2.0;
         else if(game.verifyDefeat(player))
             return -1.0;
-        else{*/
+        else{
             return blockKingCaptureValue * 0.4 + kingCaptureValue * 0.3 + pieceCaptureValue * 0.10 + blockPieceCaptureValue * 0.20;
-        //}
+        }
     }
 
     public double getOfensiveHeuristic(int player){
-
-        /*System.out.println("Ofensive Heuristic Values");
-        System.out.println("kingCaptureValue: " + kingCaptureValue);
-        System.out.println("blockKingCaptureValue: " + blockKingCaptureValue);
-        System.out.println("pieceCaptureValue: " + pieceCaptureValue);
-        System.out.println("blockPieceCaptureValue: " + blockPieceCaptureValue);
-        System.out.println();
 
         if(game.verifyVictoryOrDrawState(player) == 1)
             return 1.0;
@@ -111,7 +96,7 @@ public class Ai {
             return -2.0;
         else if(game.verifyDefeat(player))
             return -1.0;
-        else*/
+        else
             return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.20 + blockPieceCaptureValue * 0.10;
     }
 
@@ -120,8 +105,12 @@ public class Ai {
         ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
 
         executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
+        double heuristicValue;
 
-        double heuristicValue = getOfensiveHeuristic(player);
+        if(game.getPlayerKing(player) == game.getKing())
+            heuristicValue = getDefensiveHeuristic(player);
+        else
+            heuristicValue = getOfensiveHeuristic(player);
 
         if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
             return heuristicValue;
@@ -220,7 +209,12 @@ public class Ai {
 
             executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
 
-            double heuristicValue = getOfensiveHeuristic(player);
+            double heuristicValue;
+
+            if(game.getPlayerKing(player) == game.getKing())
+                heuristicValue = getDefensiveHeuristic(player);
+            else
+                heuristicValue = getOfensiveHeuristic(player);
 
             if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
                 return heuristicValue;

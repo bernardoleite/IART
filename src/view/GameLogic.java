@@ -11,6 +11,7 @@ public class GameLogic {
 	private int size;
 	private int colorDelta;
     private int [][] boardArray;
+    private int king = 0;
 
     public int[][] getBoardArray() {
         return boardArray;
@@ -64,6 +65,17 @@ public class GameLogic {
         //função responsável por realizar todos os testes da lógica
         testes();
 
+    }
+
+    public int getKing(){
+        return king;
+    }
+
+    public void setKing(int player){
+        if(player == 1)
+            king = 3;
+        else
+            king = 4;
     }
 
     public void testes(){
@@ -249,12 +261,12 @@ public class GameLogic {
          * jogada que o adversário faz, o mesmo pode come-la, e portanto a AI evita essa casa,
           * escolhendo outra. Neste caso, a posição pos(y,x)->(9,3) ou pos(y,x)->(9,9) são as escolhidas pois
            * são jogadas que à posteriori irão capturar o trono (é possivel saber observado as pos(y,x)->(3,3) e pos(y,x)->(3,9)).
-        *
+        */
             boardArray[3][9] = 1;
             boardArray[3][4] = 2;
             boardArray[4][6] = 2;
             boardArray[3][3] = 1;
-        */
+
 
         /* CASO AI: Capturar uma peça ou duas? Qual a melhor jogada?
         *
@@ -278,7 +290,7 @@ public class GameLogic {
             printBoard();
             System.out.println();
 
-            Ai.BestMove bestMove = ai.findBestMove(1, true, 4);
+            Ai.BestMove bestMove = ai.findBestMove(1, true, 2);
             bestMove.printBestMove();
     }
 
@@ -338,59 +350,6 @@ public class GameLogic {
     }
 
 
-    /*public int[][] reduceQuadrant(int currentY, int currentX){
-        int [][] reducedQuad = new int[size][size];
-        int quadrant = solveQuad(currentY, currentX);
-        int alpha = 0;
-
-        if(quadrant == 0){
-            System.out.println("Error! Something went wrong with solveQuad!");
-            System.exit(-1);
-        }
-
-        for (int i = 0; i < boardArray.length; i++)
-            for (int j = 0; j < boardArray.length; j++)
-                reducedQuad[i][j] = boardArray[i][j];
-
-        for(int i = 0; i < quadrant; i++)
-            rotate90Degree(reducedQuad);
-
-        System.out.println();
-
-        for (int i = 0; i < size; i++){
-            for(int j = 0; j < size; j++)
-                System.out.print(reducedQuad[i][j] + " ");
-            System.out.println();
-        }
-
-        return reducedQuad;
-    }*/
-
-    //sentido anti-horário a começar no canto superior esquerdo
-    /*private int solveQuad(int y, int x) {
-
-        //excepção dos quadrantes genéricos
-        if(x < 6 && y < 6)
-            return 1;
-        else if(x < 6 && y >6)
-            return 2;
-        else if(x > 6 && y > 6)
-            return 3;
-        else if(x > 6 && y < 6)
-            return 4;
-
-        //excepção para o cruzamento com o rei
-        else if(x == 6 && y < 6)
-            return 1;
-        else if( y == 6 && x < 6)
-            return 2;
-        else if(x == 6 && y > 6)
-            return 3;
-        else if(y == 6 && x > 6)
-            return 4;
-
-        return 0;
-    }*/
 
     private static void transpose(int[][] m) {
 
@@ -621,32 +580,46 @@ public class GameLogic {
 
     public boolean verifyDefeat(int player){
         if(player == 1)
-            player = 2;
+            if(verifyVictoryOrDrawState(2) == 1)
+                return true;
+            else
+                return false;
         else
-            player = 1;
-
-        if(verifyVictoryOrDrawState(player) == 1)
-            return true;
-        else
-            return false;
+            if(verifyVictoryOrDrawState(1) == 1)
+                return true;
+            else
+                return false;
     }
 
-    public int verifyVictoryOrDrawState(int player){
+    public boolean verifyIfPlayerHasNoPossibleMoves(int player){
         for(int i = 0; i < boardArray.length; i++){
             for (int j = 0; i < boardArray[i].length; j++){
                 if(boardArray[i][j] == player){
                     if(possibleMoves(i,j,player).size() > 0)
-                        return 0;
+                        return false;
                 }
             }
         }
+        return true;
+    }
 
-        if(boardArray[6][6] == player)
-            return 1;
-        else if(boardArray[6][6] == 0)
-            return -1;
+    public int getPlayerKing(int player){
+        if(player == 1)
+            return 3;
         else
-            return -1;
+            return 4;
+
+    }
+
+    public int verifyVictoryOrDrawState(int player){
+        //1 victory, -1 draw
+        if(verifyIfPlayerHasNoPossibleMoves(player))
+            if(boardArray[size/2][size/2] == getPlayerKing(player))
+                return 1;
+            else if(boardArray[size/2][size/2] == 0)
+                return -1;
+
+        return 0;
     }
 
     public void printBoard(){
