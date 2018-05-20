@@ -182,7 +182,7 @@ public class GameLogic {
             printPossibleMoves(possibleMoves(0,0,1));
         */
 
-        //AI Heuristic test for pieceCapture
+        //CASO AI: Heuristic test for pieceCapture
         /*
             Ai ai = new Ai(this);
 
@@ -196,7 +196,7 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
         */
 
-        //AI Heuristic test for blockKingCapture
+        //CASO AI: Heuristic test for blockKingCapture
         /*
             Ai ai = new Ai(this);
 
@@ -209,7 +209,7 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
         */
 
-        //AI Heuristic test for KingCapture
+        //CASO AI: Heuristic test for KingCapture
         /*
         Ai ai = new Ai(this);
 
@@ -222,7 +222,7 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
         */
 
-        //AI Heuristic test for blockPieceCapture
+        //CASO AI: Heuristic test for blockPieceCapture
         /*
             Ai ai = new Ai(this);
 
@@ -234,7 +234,7 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
          */
 
-        //AI Heuristic test for begin of the Game
+        //CASO AI: Heuristic test for begin of the Game
         /*
             Ai ai = new Ai(this);
 
@@ -243,43 +243,44 @@ public class GameLogic {
             System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic(1)));
         */
 
+        /* CASO AI: Captura de uma peça do adversário que leva a uma perda da mesma peça que a capturou na jogada seguinte
+        *
+        * Num caso em que a depth é menor que 3, é natural que a AI escolha a pos(y,x)->(3,5) pois pode capturar a peça do adversário.
+        * No entanto, considerando que a depth é maior que 3, e colocando a peça branca nesta posição, é possivel observar que na proxima
+         * jogada que o adversário faz, o mesmo pode come-la, e portanto a AI evita essa casa,
+          * escolhendo outra. Neste caso, a posição pos(y,x)->(9,3) ou pos(y,x)->(9,9) são as escolhidas pois
+           * são jogadas que à posteriori irão capturar o trono (é possivel saber observado as pos(y,x)->(3,3) e pos(y,x)->(3,9)).
+        *
+            boardArray[3][9] = 1;
+            boardArray[3][4] = 2;
+            boardArray[4][6] = 2;
+            boardArray[3][3] = 1;
+        */
 
-        //Full Ai test for pieceCapture
+        /* CASO AI: Capturar uma peça ou duas? Qual a melhor jogada?
+        *
+        * Como a captura de duas peças tem maior valor na euristica que capturar uma, a ai opta por
+        * escolher a pos(y,x)->(5,9) ao invés da pos(y,x)->(3,5).
+        *
+            boardArray[3][9] = 1;
+            boardArray[3][4] = 2;
+            boardArray[4][9] = 2;
+            boardArray[3][3] = 1;
+            boardArray[6][9] = 2;
+            boardArray[7][9] = 1;
+        */
+
+
+
+        //AI CALL
 
             Ai ai = new Ai(this);
 
-            boardArray[1][11] = 2;
-            boardArray[3][9] = 2;
-            boardArray[4][8] = 1;
-            boardArray[6][7] = 2;
-            boardArray[3][3] = 2;
-            boardArray[9][3] = 2;
-
-            /*boardArray[9][1] = 1;
-        boardArray[2][2] = 1;
-        boardArray[10][2] = 1;*/
-
-        printCaughtPieces(catchPieces(2,10,1));
-
-            //teste de printar a board para verificar o inicio random
             printBoard();
-
-            System.out.println();
             System.out.println();
 
-            /*ai.executeHeuristic(2,2,1);
-            System.out.println(ai.getOfensiveHeuristic(1));*/
-
-            Ai.BestMove bestMove = ai.findBestMove(1);
+            Ai.BestMove bestMove = ai.findBestMove(1, true, 4);
             bestMove.printBestMove();
-
-            //teste de printar a board para verificar o inicio random
-            printBoard();
-
-
-
-
-
     }
 
     public void setNewBoardMatrix(int[][] newMatrix){

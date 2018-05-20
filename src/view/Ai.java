@@ -115,7 +115,106 @@ public class Ai {
             return kingCaptureValue * 0.4 + blockKingCaptureValue * 0.3 + pieceCaptureValue * 0.20 + blockPieceCaptureValue * 0.10;
     }
 
-    public double minimax(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax){
+    public double minimaxPruning(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax, double alpha, double beta, int chosenDepth){
+
+        ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
+
+        executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
+
+        double heuristicValue = getOfensiveHeuristic(player);
+
+        if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
+            return heuristicValue;
+
+
+
+        if(depth >= (chosenDepth-1)){
+            return heuristicValue;
+        }
+
+
+        if(isMax){
+
+            double best = -3.0;
+
+            ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
+
+            //for das possible moves do jogador atual
+            for(int i = 0; i < game.getBoardArray().length; i++){
+                loop:
+                for(int j = 0; j < game.getBoardArray()[i].length; j++){
+                    if(game.getBoardArray()[i][j] == player){
+                        currentPossibleMoves = game.possibleMoves(i,j,player);
+                        for (int k = 0; k < currentPossibleMoves.size(); k++){
+
+                            int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
+
+                            //make move
+                            game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                            if(player == 1)
+                                best =  Math.max(best, heuristicValue + minimaxPruning(currentPossibleMoves.get(k), 2, depth + 1, !isMax, alpha, beta, chosenDepth));
+                            else
+                                best =  Math.max(best, heuristicValue + minimaxPruning(currentPossibleMoves.get(k), 1, depth + 1, !isMax, alpha, beta, chosenDepth));
+
+                            alpha = Math.max( alpha, best);
+                            if (beta <= alpha)
+                                break loop;
+
+                            //System.out.println("Best: " + best);
+
+                            //undo move
+                            game.setNewBoardMatrix(boardGameCopy);
+
+
+                        }
+                    }
+                }
+            }
+            return best;
+
+        }
+        else{
+
+            double best = 3.0;
+
+            ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
+
+            //for das possible moves do jogador atual
+            for(int i = 0; i < game.getBoardArray().length; i++){
+                loop:
+                for(int j = 0; j < game.getBoardArray()[i].length; j++){
+                    if(game.getBoardArray()[i][j] == player){
+                        currentPossibleMoves = game.possibleMoves(i,j,player);
+                        for (int k = 0; k < currentPossibleMoves.size(); k++){
+
+                            int [][] boardGameCopy = game.matrixDeepCopy(game.getBoardArray());
+
+                            //make move
+                            game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
+
+                            if(player == 1)
+                            {best =  Math.min(best, heuristicValue + minimaxPruning(currentPossibleMoves.get(k), 2, depth + 1, !isMax, alpha, beta, chosenDepth));}
+                            else
+                            {best =  Math.min(best, heuristicValue + minimaxPruning(currentPossibleMoves.get(k), 1, depth + 1, !isMax, alpha, beta, chosenDepth));}
+
+                            beta = Math.min( beta, best);
+                            if(beta <= alpha)
+                            break loop;
+
+                            //undo move
+                            game.setNewBoardMatrix(boardGameCopy);
+
+                        }
+                    }
+                }
+            }
+
+            return best;
+        }
+    }
+
+    public double minimax(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax, int chosenDepth){
 
             ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
 
@@ -128,7 +227,7 @@ public class Ai {
 
 
 
-            if(depth >= 2){
+            if(depth >= (chosenDepth -1)){
                 return heuristicValue;
             }
 
@@ -151,23 +250,11 @@ public class Ai {
                             //make move
                             game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
-                            /*if(depth < 1){
-                                System.out.println();
-                                System.out.println("Player: " + player);
-                                System.out.println("Minimax Working.");
-                                System.out.println("Possible move is:");
-                                System.out.println("Origin Move: (" + i + "," + j + ")");
-                                System.out.println("Possible Move analized: (" + currentPossibleMoves.get(k).getKey() + "," + currentPossibleMoves.get(k).getValue() + ")");
-
-                                System.out.println();
-                                game.printBoard();
-                                System.out.println();
-                            }*/
 
                             if(player == 1)
-                                best =  Math.max(best, minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));
+                                best =  Math.max(best, heuristicValue + minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax, chosenDepth));
                             else
-                                best =  Math.max(best, minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));
+                                best =  Math.max(best, heuristicValue + minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax, chosenDepth));
 
                             //System.out.println("Best: " + best);
 
@@ -181,12 +268,8 @@ public class Ai {
             }
             return best;
 
-
-
         }
         else{
-
-
 
             double best = 3.0;
 
@@ -205,9 +288,9 @@ public class Ai {
                             game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
                             if(player == 1)
-                                {best =  Math.min(best, -minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax));}
+                                {best =  Math.min(best, heuristicValue + minimax(currentPossibleMoves.get(k), 2, depth + 1, !isMax, chosenDepth));}
                             else
-                                {best =  Math.min(best, -minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax));}
+                                {best =  Math.min(best, heuristicValue + minimax(currentPossibleMoves.get(k), 1, depth + 1, !isMax, chosenDepth));}
 
                             //System.out.println("Best: " + best);
 
@@ -224,13 +307,13 @@ public class Ai {
         }
     }
 
-    public BestMove findBestMove(int player){
+    public BestMove findBestMove(int player, boolean prunning, int chosenDepth){
 
         ArrayList<Pair<Integer,Integer>> currentPossibleMoves;
         Pair<Integer,Integer> currentPiece = new Pair<>(-1,-1);
         Pair<Integer,Integer> bestPieceMove = new Pair<>(-1,-1);
         double currentValue;
-        double bestValue = -1.0;
+        double bestValue = -3.0;
 
         for(int i = 0; i < game.getBoardArray().length; i++){
             for(int j = 0; j < game.getBoardArray()[i].length; j++){
@@ -242,10 +325,16 @@ public class Ai {
                         //make move
                         game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
-                        if(player == 2)
-                            currentValue = minimax(currentPossibleMoves.get(k), 1, 0, false);
+                        if(!prunning)
+                            if(player == 2)
+                                currentValue = minimax(currentPossibleMoves.get(k), 1, 0, false, chosenDepth);
+                            else
+                                currentValue = minimax(currentPossibleMoves.get(k), 2, 0, false, chosenDepth);
                         else
-                            currentValue = minimax(currentPossibleMoves.get(k), 2, 0, false);
+                            if(player == 2)
+                                currentValue = minimaxPruning(currentPossibleMoves.get(k), 1, 0, false, -3.0, 3.0, chosenDepth);
+                            else
+                                currentValue = minimaxPruning(currentPossibleMoves.get(k), 2, 0, false, -3.0, 3.0, chosenDepth);
 
 
                         //undo move
