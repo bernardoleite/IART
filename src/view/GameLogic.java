@@ -63,7 +63,7 @@ public class GameLogic {
         }
 
         //função responsável por realizar todos os testes da lógica
-        testes();
+        //testes();
 
     }
 
@@ -593,7 +593,7 @@ public class GameLogic {
 
     public boolean verifyIfPlayerHasNoPossibleMoves(int player){
         for(int i = 0; i < boardArray.length; i++){
-            for (int j = 0; i < boardArray[i].length; j++){
+            for (int j = 0; j < boardArray[i].length; j++){
                 if(boardArray[i][j] == player){
                     if(possibleMoves(i,j,player).size() > 0)
                         return false;
@@ -608,7 +608,6 @@ public class GameLogic {
             return 3;
         else
             return 4;
-
     }
 
     public int verifyVictoryOrDrawState(int player){

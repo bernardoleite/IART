@@ -9,12 +9,28 @@ import javax.swing.UIManager;
 import javax.swing.text.SimpleAttributeSet;
 import javax.swing.text.StyleConstants;
 import javax.swing.text.StyledDocument;
+
+import view.Board.Mode;
+
 import javax.swing.JTextField;
 import javax.swing.JTextPane;
+import javax.swing.JComboBox;
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JLabel;
+import java.awt.event.ActionListener;
+import java.awt.event.ActionEvent;
+import javax.swing.JRadioButton;
 
 public class Menu {
 
+	private boolean firstTime = true;
 	private JFrame frmMorelli;
+	private JPanel board;
+	private int size = 13;
+	private Overlay overlay;
+	private GameLogic game;
+	private JComboBox modeBox;
+	private JTextField cpuDepthInput;
 
 	/**
 	 * Launch the application.
@@ -49,18 +65,75 @@ public class Menu {
 		frmMorelli.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
 		frmMorelli.getContentPane().setLayout(null);
 		
-		Overlay overlay = initializeOverlay();
+		//CPU Depth
+		cpuDepthInput = new JTextField();
+		cpuDepthInput.setText("2");
+		cpuDepthInput.setBounds(688, 102, 35, 20);
+		frmMorelli.getContentPane().add(cpuDepthInput);
+		cpuDepthInput.setColumns(10);
 		
-		int size = 13;
-
-		GameLogic game = new GameLogic(size);
+		//Pruning Toggle
+		JRadioButton rdbtnNewRadioButton = new JRadioButton("Pruning");
+		rdbtnNewRadioButton.setBounds(588, 129, 121, 23);
+		frmMorelli.getContentPane().add(rdbtnNewRadioButton);
 		
-		JPanel board = new Board(size, 500, game, overlay);
+		//Mode Box
+		modeBox = new JComboBox();
+		modeBox.setModel(new DefaultComboBoxModel(new String[] {"Player vs Player", "Player vs CPU", "CPU vs CPU"}));
+		modeBox.setBounds(602, 48, 121, 29);
+		frmMorelli.getContentPane().add(modeBox);
+		
+		newGame();	
+		
+		JLabel cpuDepthLabel = new JLabel("CPU Depth:");
+		cpuDepthLabel.setBounds(588, 105, 76, 14);
+		frmMorelli.getContentPane().add(cpuDepthLabel);
+		
+		//New Game Button
+		JButton startBtn = new JButton("New Game");
+		startBtn.addActionListener(new ActionListener() {
+			public void actionPerformed(ActionEvent arg0) {
+				newGame();				
+			}
+		});
+		startBtn.setBounds(602, 169, 121, 36);
+		frmMorelli.getContentPane().add(startBtn);
+	
+	}
+	
+	private void newGame(){
+		
+		if(!firstTime){
+			frmMorelli.getContentPane().remove(board);
+			board = null;
+		}else
+			firstTime = false;
+		
+		overlay = initializeOverlay();
+		game = new GameLogic(size);
+		
+		switch((String)modeBox.getSelectedItem()){
+		case "Player vs Player":
+			board = new Board(size, 500, game, overlay, Mode.PvP);
+			break;
+		case "Player vs CPU":
+			board = new Board(size, 500, game, overlay, Mode.PvC);
+			break;
+		case "CPU vs CPU":
+			board = new Board(size, 500, game, overlay, Mode.CvC);
+			break;
+		}
+		
 		board.setBackground(UIManager.getColor("MenuBar.shadow"));
 		board.setBounds(21, 24, 494, 494);
 		frmMorelli.getContentPane().add(board);
 		
-	
+		board.revalidate();
+		board.repaint();
+		
+		frmMorelli.revalidate();
+		frmMorelli.repaint();
+		
 	}
 	
 	private Overlay initializeOverlay(){
@@ -77,11 +150,10 @@ public class Menu {
 		playerTurn.setCharacterAttributes(normal, true);
 		frmMorelli.getContentPane().add(playerTurn);
 		
-		//New Game Button
-		JButton startBtn = new JButton("New Game");
-		startBtn.setBounds(604, 30, 121, 36);
-		frmMorelli.getContentPane().add(startBtn);
+		JButton CPUTurn = new JButton("CPU Turn");
+		CPUTurn.setBounds(602, 216, 121, 36);
+		frmMorelli.getContentPane().add(CPUTurn);
 		
-		return new Overlay(playerTurn, startBtn);
+		return new Overlay(playerTurn, CPUTurn);
 	}
 }

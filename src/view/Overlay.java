@@ -4,12 +4,13 @@ import javax.swing.JButton;
 import javax.swing.JTextPane;
 
 public class Overlay {
-	public JTextPane playerTurn;
-	public JButton startBtn;
 	
-	Overlay(JTextPane playerTurn, JButton startBtn){
+	public JTextPane playerTurn;
+	public JButton CPUTurn;
+	
+	Overlay(JTextPane playerTurn, JButton CPUTurn){
 		this.playerTurn = playerTurn;
-		this.startBtn = startBtn;
+		this.CPUTurn = CPUTurn;
 	}
 	
 }

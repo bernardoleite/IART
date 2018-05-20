@@ -2,35 +2,45 @@ package view;
 
 import java.awt.Color;
 import java.awt.Graphics;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.util.ArrayList;
 
 import javax.swing.JPanel;
-import javax.swing.JTextPane;
 import javax.swing.SwingUtilities;
 
 import javafx.util.Pair;
+import view.Ai.BestMove;
 
 public class Board extends JPanel {	
 	
+	public enum Mode{
+		PvP,
+		PvC,
+		CvC
+	}
+	
+	private boolean blockAll = false;
+	private Ai ai;
+	private Mode mode;
 	private Overlay overlay;
 	private int king = 0;
 	private int nextPlayer = 1;
 	private GameLogic logic;
 	private Piece selected;
-	private int pixels;
 	private int size;
 	private int tileSize;
 	private ArrayList<Tile> tiles;
 	private ArrayList<Piece> pieces;
 	
-	public Board(int size, int pixels, GameLogic logic, Overlay overlay){
-		
+	public Board(int size, int pixels, GameLogic logic, Overlay overlay, Mode mode){
+		this.mode = mode;
 		this.overlay = overlay;
 		this.logic = logic;
+		this.ai = new Ai(this.logic);
 		this.size = size;
-		this.pixels = pixels;
 		
 		tiles = new ArrayList<Tile>();
 		pieces = new ArrayList<Piece>();	
@@ -38,6 +48,7 @@ public class Board extends JPanel {
 		tileSize = pixels / this.size;
 		
 		//Initialise Tiles
+		tiles.clear();
 		for(int i = 0; i < this.size; i++){
 			for(int j = 0; j < this.size; j++){
 				int dist = centerDistance(i,j,size/2,size/2);
@@ -52,12 +63,32 @@ public class Board extends JPanel {
 		//Initialise Overlay
 		updateOverlay();
 		
+		//CPU vs CPU
+		if(mode == Mode.CvC){
+			this.overlay.CPUTurn.setVisible(true);
+			this.overlay.CPUTurn.addActionListener(new ActionListener(){
+				public void actionPerformed(ActionEvent e) {
+					CPUTurn();
+			    }
+			});
+		}else{
+			this.overlay.CPUTurn.setVisible(false);
+		}
+		
+		revalidate();
+		repaint();
+		
 		addMouseListener(new MouseAdapter() {
 
             @Override
             public void mousePressed(MouseEvent e) {
             	
             	if(SwingUtilities.isLeftMouseButton(e)){
+            		
+            		if(mode == Mode.CvC || blockAll){
+            			return;
+            		}
+            		
             		if(selected == null){
                 		for(int i = 0; i < pieces.size(); i++){
                     		if(pieces.get(i).x < e.getX() && pieces.get(i).x + tileSize > e.getX() && pieces.get(i).y < e.getY() && pieces.get(i).y + tileSize > e.getY() && pieces.get(i).player == nextPlayer){
@@ -108,21 +139,57 @@ public class Board extends JPanel {
 	}
 	
 	private void turnEnd(int moveY, int moveX, int player){
+		
+		if(blockAll)
+			return;
+		
 		selected = null;
-		swapPlayer();
+			
 		checkTrap(moveY, moveX, player);
 		checkCapture(moveY, moveX, player);
-		/*
-		 * TODO
-		 * Detect end of game
-		 */
-		checkEnd();
+		swapPlayer();		
+		
 		setupPieces();
 		updateOverlay();
+		repaint();
+		revalidate();
+		
+		checkEnd();
+		
+		if(this.mode == Mode.PvC)
+			CPUTurn();
+	}
+	
+	private void CPUTurn(){
+		
+		if(blockAll)
+			return;
+		
+		BestMove move = this.ai.findBestMove(this.nextPlayer, true, 2);
+		this.logic.makeMove(move.getOriginMove().getKey(), move.getOriginMove().getValue(), move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
+		
+		checkTrap(move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
+		checkCapture(move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
+		swapPlayer();
+		
+		setupPieces();
+		updateOverlay();
+		repaint();
+		revalidate();
+		
+		checkEnd();
 	}
 	
 	private void checkEnd(){
-		
+		if(!logic.verifyIfPlayerHasNoPossibleMoves(this.nextPlayer))
+			return;
+		if(this.king == 0)
+			overlay.playerTurn.setText("DRAW");
+		else if(this.king == 1)
+			overlay.playerTurn.setText("WINNER: WHITE");
+		else if(this.king == 2)
+			overlay.playerTurn.setText("WINNER: BLACK");
+		this.blockAll = true;
 	}
 	
 	private void updateOverlay(){
@@ -136,6 +203,7 @@ public class Board extends JPanel {
 	private void checkCapture(int moveY, int moveX, int player){
 		if(logic.verifyCaptureKing(moveY, moveX, player)){
 			king = player;
+			logic.setKing(player);
 		}
 	}
 	
@@ -144,10 +212,12 @@ public class Board extends JPanel {
 		for(int i = 0; i < trapped.size(); i++){
 			if(logic.getBoardArray()[trapped.get(i).getKey()][trapped.get(i).getValue()] != player){
 				logic.setBoardArray(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
+				//Check trap causes capture too
+				checkCapture(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
 				//Check recursively
 				checkTrap(trapped.get(i).getKey(), trapped.get(i).getValue(), player);
 			}
-    	}			
+    	}
 	}
 	
 	private void swapPlayer(){
