@@ -8,7 +8,7 @@ import java.util.Random;
 
 public class GameLogic {
 
-	private int size;
+	private int size = 12;
 	private int colorDelta;
     private int [][] boardArray;
     private int king = 0;
@@ -63,7 +63,7 @@ public class GameLogic {
         }
 
         //função responsável por realizar todos os testes da lógica
-        //testes();
+        testes();
 
     }
 
@@ -235,15 +235,16 @@ public class GameLogic {
 
         //CASO AI: Heuristic test for blockPieceCapture
         /*
+            boardArray[2][3] = 2;
+            boardArray[2][4] = 1;
+            boardArray[2][5] = 1;
+
             Ai ai = new Ai(this);
+            ai.executeHeuristic(2,5, 1);
+            System.out.println("Ofensive Heuristic Value: " + ai.getOfensiveHeuristic(1));
+            System.out.println("Defensive Heuristic Value: " + ai.getDefensiveHeuristic(1));
+        */
 
-            boardArray[2][2] = 2;
-            boardArray[2][3] = 1;
-
-            ai.executeHeuristic(2,4, 1);
-            System.out.println("Ofensive Heuristic Value: " + String.format( "%.5f", ai.getOfensiveHeuristic()));
-            System.out.println("Defensive Heuristic Value: " + String.format( "%.5f",ai.getDefensiveHeuristic()));
-         */
 
         //CASO AI: Heuristic test for begin of the Game
         /*
@@ -255,17 +256,18 @@ public class GameLogic {
         */
 
         /* CASO AI: Captura de uma peça do adversário que leva a uma perda da mesma peça que a capturou na jogada seguinte
-        *
-        * Num caso em que a depth é menor que 3, é natural que a AI escolha a pos(y,x)->(3,5) pois pode capturar a peça do adversário.
-        * No entanto, considerando que a depth é maior que 3, e colocando a peça branca nesta posição, é possivel observar que na proxima
+         *
+         * Num caso em que a depth é menor que 3, é natural que a AI escolha a pos(y,x)->(3,5) pois pode capturar a peça do adversário.
+         * No entanto, considerando que a depth é maior que 3, e colocando a peça branca nesta posição, é possivel observar que na proxima
          * jogada que o adversário faz, o mesmo pode come-la, e portanto a AI evita essa casa,
-          * escolhendo outra. Neste caso, a posição pos(y,x)->(9,3) ou pos(y,x)->(9,9) são as escolhidas pois
-           * são jogadas que à posteriori irão capturar o trono (é possivel saber observado as pos(y,x)->(3,3) e pos(y,x)->(3,9)).
-        */
-            boardArray[3][9] = 1;
-            boardArray[3][4] = 2;
-            boardArray[4][6] = 2;
-            boardArray[3][3] = 1;
+         * escolhendo outra. Neste caso, a posição pos(y,x)->(9,3) ou pos(y,x)->(9,9) são as escolhidas pois
+         * são jogadas que à posteriori irão capturar o trono (é possivel saber observado as pos(y,x)->(3,3) e pos(y,x)->(3,9)).
+         */
+            /*boardArray[3][9] = 2;
+            boardArray[3][4] = 1;
+            boardArray[4][6] = 1;
+            boardArray[3][3] = 2;*/
+
 
 
         /* CASO AI: Capturar uma peça ou duas? Qual a melhor jogada?
@@ -278,20 +280,22 @@ public class GameLogic {
             boardArray[4][9] = 2;
             boardArray[3][3] = 1;
             boardArray[6][9] = 2;
-            boardArray[7][9] = 1;
+            boardArray[7][9] = 2;
         */
 
 
 
-        //AI CALL
 
+        //AI CALL
+        /*
             Ai ai = new Ai(this);
 
             printBoard();
             System.out.println();
 
-            Ai.BestMove bestMove = ai.findBestMove(1, true, 2);
-            bestMove.printBestMove();
+            Ai.BestMove bestMove = ai.findBestMove(1, true, 1);
+           bestMove.printBestMove();
+       */
     }
 
     public void setNewBoardMatrix(int[][] newMatrix){
@@ -313,6 +317,26 @@ public class GameLogic {
         return newMatrix;
     }
 
+    void makeRandomMove(int player){
+
+        Random rand = new Random();
+
+        int rndY = rand.nextInt((0 - 12) + 1);
+        int rndX = rand.nextInt((0 - 12) + 1);
+
+        while(this.boardArray[rndY][rndX] != player){
+            rndY = rand.nextInt((0 - 12) + 1);
+            rndX = rand.nextInt((0 - 12) + 1);
+        }
+
+        ArrayList<Pair<Integer,Integer>>  possibleMoves = possibleMoves(rndY, rndX, player);
+
+        int rndMove = rand.nextInt((0 - possibleMoves.size()) + 1);
+
+        makeMove(rndY, rndX, possibleMoves.get(rndMove).getKey(), possibleMoves.get(rndMove).getValue(), player);
+
+    }
+
     public boolean verifyCaptureKing(int currentMoveY, int currentMoveX, int player){
         int newMoveY = currentMoveY - 6;
         int newMoveX = currentMoveX - 6;
@@ -323,14 +347,33 @@ public class GameLogic {
         for(int i = 0; i < 3; i++){
             rotate90Degree(reducedQuad);
             if(reducedQuad[currentMoveY][currentMoveX] != player){
-                //System.out.println("entra");
                 return false;
             }
         }
 
-        //System.out.println("Symmetry found!");
-
         return true;
+    }
+
+    public int verifyHeuristicCaptureKing(int currentMoveY, int currentMoveX, int player){
+        if(boardArray[currentMoveY][currentMoveX] == player){
+            return 0;
+        }
+
+        int newMoveY = currentMoveY - 6;
+        int newMoveX = currentMoveX - 6;
+        int[][] reducedQuad;
+
+        reducedQuad = matrixDeepCopy(boardArray);
+
+        for(int i = 0; i < 3; i++){
+            rotate90Degree(reducedQuad);
+            if(reducedQuad[currentMoveY][currentMoveX] != player){
+                //System.out.println("entra");
+                return i+1;
+            }
+        }
+
+        return 4;
     }
 
     public boolean makeMove(int actualY, int actualX, int newY, int newX, int player){
@@ -501,12 +544,68 @@ public class GameLogic {
     }
 
     public ArrayList<Pair<Integer,Integer>> verifyIfPieceCaptureWasBlocked(int currentY, int currentX, int player){
-        ArrayList<Pair<Integer,Integer>> capturesAvoided;
+        ArrayList<Pair<Integer,Integer>> capturesAvoided = new  ArrayList<>();
 
-        if(player == 1)
-            capturesAvoided = catchPieces(currentY, currentX, 2);
-        else
-            capturesAvoided = catchPieces(currentY, currentX, 1);
+        //todos os comentarios estão em conta que a peça se encontra no 1º quadrante
+        //Verificação na horizontal da posição atual para a frente.
+        if(getBoardArray()[currentY][currentX] != player)
+            return capturesAvoided;
+
+        if(currentX < size-2)
+            if(getBoardArray()[currentY][currentX+1] == player && getBoardArray()[currentY][currentX+1] != 0)
+                if(getBoardArray()[currentY][currentX+2] != player && getBoardArray()[currentY][currentX+2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY, currentX+1));
+                }
+
+
+        //Verificação na horizontal da posição atual para a trás.
+        if(currentX > 1)
+            if(getBoardArray()[currentY][currentX-1] == player && getBoardArray()[currentY][currentX-1] != 0)
+                if(getBoardArray()[currentY][currentX-2] != player && getBoardArray()[currentY][currentX-2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY, currentX-1));
+                }
+
+        //Verificação na vertical da posição atual para baixo.
+        if(currentY < size-2)
+            if(getBoardArray()[currentY+1][currentX] == player && getBoardArray()[currentY+1][currentX] != 0)
+                if(getBoardArray()[currentY+2][currentX] != player && getBoardArray()[currentY+2][currentX] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY+1, currentX));
+                }
+
+        //Verificação na vertical da posição atual para cima.
+        if(currentY > 1)
+            if(getBoardArray()[currentY-1][currentX] == player && getBoardArray()[currentY-1][currentX] != 0)
+                if(getBoardArray()[currentY-2][currentX] != player && getBoardArray()[currentY-2][currentX] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY-1, currentX));
+                }
+
+        //Verificação diagonal cima para a direita (-1 em x) (+1 em y)
+        if(currentY > 1 && currentX < size-2)
+            if(getBoardArray()[currentY-1][currentX+1] == player && getBoardArray()[currentY-1][currentX+1] != 0)
+                if(getBoardArray()[currentY-2][currentX+2] != player && getBoardArray()[currentY-2][currentX+2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY-1, currentX+1));
+                }
+
+        //Verificação diagonal cima para a esquerda (-1 em x) (-1 em y)
+        if(currentY > 1 && currentX > 1)
+            if(getBoardArray()[currentY-1][currentX-1] == player && getBoardArray()[currentY-1][currentX-1] != 0)
+                if(getBoardArray()[currentY-2][currentX-2] != player && getBoardArray()[currentY-2][currentX-2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY-1, currentX-1));
+                }
+
+        //Verificação diagonal baixo para a direita (+1 em x) (+1 em y)
+        if(currentY < size-2 && currentX < size-2)
+            if(getBoardArray()[currentY+1][currentX+1] == player && getBoardArray()[currentY+1][currentX+1] != 0)
+                if(getBoardArray()[currentY+2][currentX+2] != player && getBoardArray()[currentY+2][currentX+2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY+1, currentX+1));
+                }
+
+        //Verificação diagonal baixo para a esquerda (-1 em x) (-1 em y)
+        if(currentY < size-2 && currentX > 1)
+            if(getBoardArray()[currentY+1][currentX-1] == player && getBoardArray()[currentY+1][currentX-1] != 0)
+                if(getBoardArray()[currentY+2][currentX-2] != player && getBoardArray()[currentY+2][currentX-2] != 0){
+                    capturesAvoided.add(new Pair<Integer, Integer>(currentY+1, currentX-1));
+                }
 
         return capturesAvoided;
     }

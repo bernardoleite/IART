@@ -68,11 +68,11 @@ public class Ai {
     }
 
     public void calculatePieceCaptureValue(int y, int x, int player){
-        pieceCaptureValue = game.catchPieces(y,x,player).size() / 6.0;
+        pieceCaptureValue = (double)game.catchPieces(y,x,player).size() / 6.0;
     }
 
     public void calculateBlockPieceCaptureValue(int y, int x, int player){
-        blockPieceCaptureValue = game.verifyIfPieceCaptureWasBlocked(y,x,player).size() / 6.0;
+        blockPieceCaptureValue = (double)game.verifyIfPieceCaptureWasBlocked(y,x,player).size() / 6.0;
     }
 
     public double getDefensiveHeuristic(int player){
@@ -102,15 +102,19 @@ public class Ai {
 
     public double minimaxPruning(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax, double alpha, double beta, int chosenDepth){
 
-        ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
-
         executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
         double heuristicValue;
 
         if(game.getPlayerKing(player) == game.getKing())
-            heuristicValue = getDefensiveHeuristic(player);
+            if(!isMax)
+                heuristicValue = getDefensiveHeuristic(player);
+            else
+                heuristicValue = -getDefensiveHeuristic(player);
         else
-            heuristicValue = getOfensiveHeuristic(player);
+            if(!isMax)
+                heuristicValue = getOfensiveHeuristic(player);
+            else
+                heuristicValue = -getOfensiveHeuristic(player);
 
         if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
             return heuristicValue;
@@ -149,8 +153,6 @@ public class Ai {
                             alpha = Math.max( alpha, best);
                             if (beta <= alpha)
                                 break loop;
-
-                            //System.out.println("Best: " + best);
 
                             //undo move
                             game.setNewBoardMatrix(boardGameCopy);
@@ -205,19 +207,20 @@ public class Ai {
 
     public double minimax(Pair<Integer, Integer> possibleMove, int player, int depth, boolean isMax, int chosenDepth){
 
-            ArrayList<Pair<Integer,Integer>> possibleMoves = game.possibleMoves(possibleMove.getKey(), possibleMove.getValue(), player);
-
             executeHeuristic(possibleMove.getKey(), possibleMove.getValue(), player);
 
             double heuristicValue;
 
             if(game.getPlayerKing(player) == game.getKing())
-                heuristicValue = getDefensiveHeuristic(player);
+                if(!isMax){
+                    heuristicValue = getDefensiveHeuristic(player);}
+                else
+                    heuristicValue = -getDefensiveHeuristic(player);
             else
+            if(!isMax)
                 heuristicValue = getOfensiveHeuristic(player);
-
-            if(heuristicValue == -1.0 || heuristicValue == 1.0 || heuristicValue == -2.0)
-                return heuristicValue;
+            else
+                heuristicValue = -getOfensiveHeuristic(player);
 
 
 
@@ -319,6 +322,7 @@ public class Ai {
                         //make move
                         game.makeMove(i, j, currentPossibleMoves.get(k).getKey(), currentPossibleMoves.get(k).getValue(), player);
 
+                        /*
                         if(!prunning)
                             if(player == 2)
                                 currentValue = minimax(currentPossibleMoves.get(k), 1, 0, false, chosenDepth);
@@ -329,6 +333,12 @@ public class Ai {
                                 currentValue = minimaxPruning(currentPossibleMoves.get(k), 1, 0, false, -3.0, 3.0, chosenDepth);
                             else
                                 currentValue = minimaxPruning(currentPossibleMoves.get(k), 2, 0, false, -3.0, 3.0, chosenDepth);
+                        */
+
+                        if(!prunning)
+                            currentValue = minimax(currentPossibleMoves.get(k), player, 0, false, chosenDepth);
+                        else
+                            currentValue = minimaxPruning(currentPossibleMoves.get(k), player, 0, false, -3.0, 3.0, chosenDepth);
 
 
                         //undo move
