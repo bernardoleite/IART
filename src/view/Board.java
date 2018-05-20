@@ -169,8 +169,6 @@ public class Board extends JPanel {
 		if(blockAll)
 			return;
 		
-		System.out.println(this.logic);
-		
 		BestMove move = this.ai.findBestMove(this.nextPlayer, this.pruning, this.depth);
 		this.logic.makeMove(move.getOriginMove().getKey(), move.getOriginMove().getValue(), move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
 		
