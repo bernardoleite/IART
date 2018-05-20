@@ -148,7 +148,6 @@ public class GameLogic {
         */
 
 
-
         //teste de simetria
             /*boardArray[1][2] = 1;
             //boardArray[this.size-3][1] = 2;
