@@ -94,25 +94,10 @@ public class Board extends JPanel {
             		}
             		
             		if(selected == null){
-                		for(int i = 0; i < pieces.size(); i++){
-                    		if(pieces.get(i).x < e.getX() && pieces.get(i).x + tileSize > e.getX() && pieces.get(i).y < e.getY() && pieces.get(i).y + tileSize > e.getY() && pieces.get(i).player == nextPlayer){
-                    			selected = pieces.get(i);
-                    			
-                    			//Ignore empty selects
-                    			int tX = coorToId(selected.x);
-                    			int tY = coorToId(selected.y);
-                    			ArrayList<Pair<Integer,Integer>> moves = logic.possibleMoves(tY, tX, selected.player);
-                    			if(moves.size() <= 0){
-                    				selected = null;
-                    				return;
-                    			}
-                    			
-                    			repaint();
-                    			revalidate();
-                    			return;
-                    		}
-                    	}
-                	}else{
+            			detectPieceClick(e);
+                	}else{                		
+                		detectPieceClick(e);
+                		
                 		int tX = coorToId(selected.x);
             			int tY = coorToId(selected.y);
             			ArrayList<Pair<Integer,Integer>> moves = logic.possibleMoves(tY, tX, selected.player);
@@ -140,6 +125,27 @@ public class Board extends JPanel {
             
         });
 		
+	}
+	
+	private void detectPieceClick(MouseEvent e){
+		for(int i = 0; i < pieces.size(); i++){
+    		if(pieces.get(i).x < e.getX() && pieces.get(i).x + tileSize > e.getX() && pieces.get(i).y < e.getY() && pieces.get(i).y + tileSize > e.getY() && pieces.get(i).player == nextPlayer){
+    			selected = pieces.get(i);
+    			
+    			//Ignore empty selects
+    			int tX = coorToId(selected.x);
+    			int tY = coorToId(selected.y);
+    			ArrayList<Pair<Integer,Integer>> moves = logic.possibleMoves(tY, tX, selected.player);
+    			if(moves.size() <= 0){
+    				selected = null;
+    				return;
+    			}
+    			
+    			repaint();
+    			revalidate();
+    			return;
+    		}
+    	}
 	}
 	
 	private void turnEnd(int moveY, int moveX, int player){
