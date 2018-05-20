@@ -321,17 +321,17 @@ public class GameLogic {
 
         Random rand = new Random();
 
-        int rndY = rand.nextInt((0 - 12) + 1);
-        int rndX = rand.nextInt((0 - 12) + 1);
+        int rndY = rand.nextInt(12);
+        int rndX = rand.nextInt(12);
 
         while(this.boardArray[rndY][rndX] != player){
-            rndY = rand.nextInt((0 - 12) + 1);
-            rndX = rand.nextInt((0 - 12) + 1);
+            rndY = rand.nextInt(12);
+            rndX = rand.nextInt(12);
         }
 
         ArrayList<Pair<Integer,Integer>>  possibleMoves = possibleMoves(rndY, rndX, player);
 
-        int rndMove = rand.nextInt((0 - possibleMoves.size()) + 1);
+        int rndMove = rand.nextInt( possibleMoves.size());
 
         makeMove(rndY, rndX, possibleMoves.get(rndMove).getKey(), possibleMoves.get(rndMove).getValue(), player);
 

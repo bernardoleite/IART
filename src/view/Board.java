@@ -176,8 +176,11 @@ public class Board extends JPanel {
 			return;
 		
 		BestMove move = this.ai.findBestMove(this.nextPlayer, this.pruning, this.depth);
-		this.logic.makeMove(move.getOriginMove().getKey(), move.getOriginMove().getValue(), move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
-		
+		if(move.getBestMoveValue() != 0.0)
+			this.logic.makeMove(move.getOriginMove().getKey(), move.getOriginMove().getValue(), move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
+		else
+			this.logic.makeRandomMove(this.nextPlayer);
+
 		checkTrap(move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
 		checkCapture(move.getNewMove().getKey(), move.getNewMove().getValue(), this.nextPlayer);
 		swapPlayer();

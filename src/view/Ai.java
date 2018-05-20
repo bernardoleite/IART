@@ -11,12 +11,18 @@ public class Ai {
     public class BestMove{
         private Pair<Integer, Integer> originMove;
         private Pair<Integer, Integer> newMove;
+        private double bestMoveValue;
 
         public BestMove(){}
 
-        public BestMove(Pair<Integer, Integer> originMove, Pair<Integer, Integer> newMove){
+        public double getBestMoveValue(){
+            return bestMoveValue;
+        }
+
+        public BestMove(Pair<Integer, Integer> originMove, Pair<Integer, Integer> newMove, double bestMoveValue){
             this.originMove = originMove;
             this.newMove = newMove;
+            this.bestMoveValue = bestMoveValue;
         }
 
         public Pair<Integer, Integer> getOriginMove() {
@@ -351,7 +357,7 @@ public class Ai {
                             bestValue = currentValue;
 
                             System.out.println("BestValue (Win Condition): " + bestValue);
-                            return new BestMove(currentPiece, bestPieceMove);
+                            return new BestMove(currentPiece, bestPieceMove, bestValue);
 
                         }
 
@@ -366,7 +372,7 @@ public class Ai {
         }
 
         System.out.println("BestValue: " + bestValue);
-        return new BestMove(currentPiece, bestPieceMove);
+        return new BestMove(currentPiece, bestPieceMove, bestValue);
 
     }
 }
