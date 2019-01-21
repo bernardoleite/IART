@@ -2,7 +2,7 @@
 
 ### Description
 
-The objective of the chosen topic is to focus on the topics of Adversarial Search using decision rules in the context of decision theory, game theory, statistics and techniques for minimizing possible losses to pessimistic scenarios (maximum loss). Our implementation relies, therefore, on the application of the Minimax algorithm and Minimax with alfa beta pruning to make decisions in the presence of uncertainties.
+The objective of this project is to focus on the topics of Adversarial Search using decision rules in the context of decision theory, game theory, statistics and techniques for minimizing possible losses to pessimistic scenarios (maximum loss). Our implementation relies, therefore, on the application of the Minimax algorithm and Minimax with alfa beta pruning to make decisions in the presence of uncertainties.
 
 The final product is a game that contains three playable options:
 Human vs Human, Human vs Computer and Computer vs Computer.
